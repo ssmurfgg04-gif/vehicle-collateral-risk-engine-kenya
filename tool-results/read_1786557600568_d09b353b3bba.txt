@@ -1,0 +1,820 @@
+     1→     1→'use client';
+     2→     2→
+     3→     3→import { useState, useEffect, useCallback } from 'react';
+     4→     4→import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+     5→     5→import { Badge } from '@/components/ui/badge';
+     6→     6→import { Button } from '@/components/ui/button';
+     7→     7→import { Input } from '@/components/ui/input';
+     8→     8→import { Label } from '@/components/ui/label';
+     9→     9→import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+    10→    10→import { Separator } from '@/components/ui/separator';
+    11→    11→import { Progress } from '@/components/ui/progress';
+    12→    12→import { 
+    13→    13→  Shield, Search, AlertTriangle, Car, Building2, Activity, 
+    14→    14→  Clock, Globe, Zap, FileText, MapPin, TrendingUp,
+    15→    15→  CheckCircle2, XCircle, AlertOctagon, Eye, Layers,
+    16→    16→  Fingerprint, Scale
+    17→    17→} from 'lucide-react';
+    18→    18→
+    19→    19→// ─── TYPES ──────────────────────────────────────────────────────────────────────
+    20→    20→
+    21→    21→interface DashboardData {
+    22→    22→  summary: {
+    23→    23→    totalVehicles: number;
+    24→    24→    totalLoanApps: number;
+    25→    25→    totalActiveAuctions: number;
+    26→    26→    totalFraudFlags: number;
+    27→    27→    loanStackingDetections: number;
+    28→    28→    avgRiskScore: number;
+    29→    29→    sourcesActive: number;
+    30→    30→    riskChecksToday: number;
+    31→    31→  };
+    32→    32→  riskDistribution: Record<string, number>;
+    33→    33→  lenderExposure: Record<string, number>;
+    34→    34→  flagTypes: Record<string, number>;
+    35→    35→  recentChecks: Array<{
+    36→    36→    requestId: string;
+    37→    37→    queryPlate: string;
+    38→    38→    riskScore: number;
+    39→    39→    riskLevel: string;
+    40→    40→    recommendation: string;
+    41→    41→    responseTimeMs: number | null;
+    42→    42→    createdAt: string;
+    43→    43→  }>;
+    44→    44→  vehicles: Array<{
+    45→    45→    id: string;
+    46→    46→    plate: string;
+    47→    47→    rawPlate: string;
+    48→    48→    make: string | null;
+    49→    49→    model: string | null;
+    50→    50→    year: number | null;
+    51→    51→    plateCategory: string | null;
+    52→    52→    activeLoans: number;
+    53→    53→    lenders: string[];
+    54→    54→    activeAuctions: number;
+    55→    55→    fraudFlags: Array<{ type: string; severity: string; description: string }>;
+    56→    56→    currentYard: string | null;
+    57→    57→    degreeCentrality: number;
+    58→    58→    fraudRingSize: number;
+    59→    59→  }>;
+    60→    60→  sources: Array<{
+    61→    61→    name: string;
+    62→    62→    url: string;
+    63→    63→    category: string;
+    64→    64→    complexity: string;
+    65→    65→    lastScrapedAt: string | null;
+    66→    66→    lastStatus: string | null;
+    67→    67→    recordsFound: number;
+    68→    68→    scrapeIntervalHours: number;
+    69→    69→  }>;
+    70→    70→}
+    71→    71→
+    72→    72→interface RiskCheckResult {
+    73→    73→  request_id: string;
+    74→    74→  query_registration: string;
+    75→    75→  risk_score: number;
+    76→    76→  risk_level: string;
+    77→    77→  confidence: number;
+    78→    78→  flagged_issues: string[];
+    79→    79→  entity_summary: Record<string, unknown>;
+    80→    80→  graph_analysis: Record<string, unknown>;
+    81→    81→  historical_footprints: Array<Record<string, unknown>>;
+    82→    82→  recommendation: string;
+    83→    83→  score_breakdown?: Record<string, number>;
+    84→    84→  compliance_notes?: Record<string, unknown>;
+    85→    85→}
+    86→    86→
+    87→    87→// ─── HELPERS ────────────────────────────────────────────────────────────────────
+    88→    88→
+    89→    89→function getRiskColor(level: string): string {
+    90→    90→  switch (level) {
+    91→    91→    case 'LOW': return 'text-emerald-600';
+    92→    92→    case 'MEDIUM': return 'text-amber-600';
+    93→    93→    case 'HIGH': return 'text-orange-600';
+    94→    94→    case 'CRITICAL': return 'text-red-600';
+    95→    95→    default: return 'text-gray-600';
+    96→    96→  }
+    97→    97→}
+    98→    98→
+    99→    99→function getRiskBg(level: string): string {
+   100→   100→  switch (level) {
+   101→   101→    case 'LOW': return 'bg-emerald-50 border-emerald-200';
+   102→   102→    case 'MEDIUM': return 'bg-amber-50 border-amber-200';
+   103→   103→    case 'HIGH': return 'bg-orange-50 border-orange-200';
+   104→   104→    case 'CRITICAL': return 'bg-red-50 border-red-200';
+   105→   105→    default: return 'bg-gray-50 border-gray-200';
+   106→   106→  }
+   107→   107→}
+   108→   108→
+   109→   109→function getRiskBadgeVariant(level: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+   110→   110→  switch (level) {
+   111→   111→    case 'LOW': return 'secondary';
+   112→   112→    case 'MEDIUM': return 'outline';
+   113→   113→    case 'HIGH': return 'default';
+   114→   114→    case 'CRITICAL': return 'destructive';
+   115→   115→    default: return 'outline';
+   116→   116→  }
+   117→   117→}
+   118→   118→
+   119→   119→function formatKES(n: number): string {
+   120→   120→  return `KSh ${(n / 1000).toFixed(0)}K`;
+   121→   121→}
+   122→   122→
+   123→   123→function timeAgo(dateStr: string): string {
+   124→   124→  const diff = Date.now() - new Date(dateStr).getTime();
+   125→   125→  const mins = Math.floor(diff / 60000);
+   126→   126→  if (mins < 60) return `${mins}m ago`;
+   127→   127→  const hrs = Math.floor(mins / 60);
+   128→   128→  if (hrs < 24) return `${hrs}h ago`;
+   129→   129→  return `${Math.floor(hrs / 24)}d ago`;
+   130→   130→}
+   131→   131→
+   132→   132→function getRecIcon(rec: string) {
+   133→   133→  switch (rec) {
+   134→   134→    case 'APPROVE_LOAN': return <CheckCircle2 className="h-4 w-4 text-emerald-600" />;
+   135→   135→    case 'REVIEW_MANUALLY': return <AlertTriangle className="h-4 w-4 text-amber-600" />;
+   136→   136→    case 'REJECT_LOAN': return <XCircle className="h-4 w-4 text-red-600" />;
+   137→   137→    default: return null;
+   138→   138→  }
+   139→   139→}
+   140→   140→
+   141→   141→// ─── MAIN COMPONENT ─────────────────────────────────────────────────────────────
+   142→   142→
+   143→   143→export default function Home() {
+   144→   144→  const [data, setData] = useState<DashboardData | null>(null);
+   145→   145→  const [loading, setLoading] = useState(true);
+   146→   146→  const [seeding, setSeeding] = useState(false);
+   147→   147→  const [seeded, setSeeded] = useState(false);
+   148→   148→
+   149→   149→  // Risk check form state
+   150→   150→  const [plate, setPlate] = useState('');
+   151→   151→  const [chassis, setChassis] = useState('');
+   152→   152→  const [mfiId, setMfiId] = useState('MFI-2847');
+   153→   153→  const [loanAmount, setLoanAmount] = useState('850000');
+   154→   154→  const [checking, setChecking] = useState(false);
+   155→   155→  const [riskResult, setRiskResult] = useState<RiskCheckResult | null>(null);
+   156→   156→
+   157→   157→  // Search state
+   158→   158→  const [searchQ, setSearchQ] = useState('');
+   159→   159→  const [searchResults, setSearchResults] = useState<Array<Record<string, unknown>>>([]);
+   160→   160→
+   161→   161→  const loadData = useCallback(async () => {
+   162→   162→    try {
+   163→   163→      const res = await fetch('/api/v1/dashboard/stats');
+   164→   164→      if (res.ok) {
+   165→   165→        const json = await res.json();
+   166→   166→        setData(json);
+   167→   167→      }
+   168→   168→    } catch { /* ignore */ }
+   169→   169→    setLoading(false);
+   170→   170→  }, []);
+   171→   171→
+   172→   172→  useEffect(() => {
+   173→   173→    // Auto-seed then load
+   174→   174→    const init = async () => {
+   175→   175→      try {
+   176→   176→        const seedRes = await fetch('/api/seed');
+   177→   177→        if (seedRes.ok) {
+   178→   178→          const seedJson = await seedRes.json();
+   179→   179→          if (seedJson.vehicleCount > 0) setSeeded(true);
+   180→   180→        }
+   181→   181→      } catch { /* ignore */ }
+   182→   182→      loadData();
+   183→   183→    };
+   184→   184→    init();
+   185→   185→  }, [loadData]);
+   186→   186→
+   187→   187→  const handleRiskCheck = async () => {
+   188→   188→    if (!plate) return;
+   189→   189→    setChecking(true);
+   190→   190→    setRiskResult(null);
+   191→   191→    try {
+   192→   192→      const res = await fetch('/api/v1/collateral/risk-check', {
+   193→   193→        method: 'POST',
+   194→   194→        headers: { 'Content-Type': 'application/json' },
+   195→   195→        body: JSON.stringify({
+   196→   196→          query_registration: plate,
+   197→   197→          query_chassis: chassis || undefined,
+   198→   198→          requestor_mfi_id: mfiId,
+   199→   199→          loan_amount_kes: parseInt(loanAmount) || undefined,
+   200→   200→        }),
+   201→   201→      });
+   202→   202→      if (res.ok) {
+   203→   203→        const json = await res.json();
+   204→   204→        setRiskResult(json);
+   205→   205→        loadData(); // refresh dashboard
+   206→   206→      }
+   207→   207→    } catch { /* ignore */ }
+   208→   208→    setChecking(false);
+   209→   209→  };
+   210→   210→
+   211→   211→  const handleSearch = async () => {
+   212→   212→    if (!searchQ) return;
+   213→   213→    try {
+   214→   214→      const res = await fetch(`/api/v1/vehicles/search?q=${encodeURIComponent(searchQ)}`);
+   215→   215→      if (res.ok) {
+   216→   216→        const json = await res.json();
+   217→   217→        setSearchResults(json.results);
+   218→   218→      }
+   219→   219→    } catch { /* ignore */ }
+   220→   220→  };
+   221→   221→
+   222→   222→  if (loading) {
+   223→   223→    return (
+   224→   224→      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+   225→   225→        <div className="flex flex-col items-center gap-4">
+   226→   226→          <div className="h-12 w-12 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
+   227→   227→          <p className="text-slate-400 font-mono text-sm">Initializing Risk Engine...</p>
+   228→   228→        </div>
+   229→   229→      </div>
+   230→   230→    );
+   231→   231→  }
+   232→   232→
+   233→   233→  const s = data?.summary ?? { totalVehicles: 0, totalLoanApps: 0, totalActiveAuctions: 0, totalFraudFlags: 0, loanStackingDetections: 0, avgRiskScore: 0, sourcesActive: 0, riskChecksToday: 0 };
+   234→   234→
+   235→   235→  return (
+   236→   236→    <div className="min-h-screen bg-slate-950 text-slate-100">
+   237→   237→      {/* ─── HEADER ──────────────────────────────────────────────────────────── */}
+   238→   238→      <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-sm sticky top-0 z-50">
+   239→   239→        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+   240→   240→          <div className="flex items-center gap-3">
+   241→   241→            <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+   242→   242→              <Shield className="h-5 w-5 text-white" />
+   243→   243→            </div>
+   244→   244→            <div>
+   245→   245→              <h1 className="text-sm font-bold tracking-tight text-white">Vehicle Collateral Risk Engine</h1>
+   246→   246→              <p className="text-[10px] text-slate-500 font-mono">B2B • Kenya Market • Graph-Native Fraud Detection</p>
+   247→   247→            </div>
+   248→   248→          </div>
+   249→   249→          <div className="flex items-center gap-4">
+   250→   250→            <Badge variant="outline" className="text-[10px] font-mono border-emerald-700 text-emerald-400">
+   251→   251→              <Activity className="h-3 w-3 mr-1" /> LIVE
+   252→   252→            </Badge>
+   253→   253→            <Badge variant="outline" className="text-[10px] font-mono border-slate-700 text-slate-400">
+   254→   254→              ODPC: DCP-2026-8847
+   255→   255→            </Badge>
+   256→   256→          </div>
+   257→   257→        </div>
+   258→   258→      </header>
+   259→   259→
+   260→   260→      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
+   261→   261→        {/* ─── KPI ROW ───────────────────────────────────────────────────────── */}
+   262→   262→        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-6">
+   263→   263→          {[
+   264→   264→            { label: 'Vehicles', value: s.totalVehicles, icon: Car, color: 'text-sky-400' },
+   265→   265→            { label: 'Loan Apps', value: s.totalLoanApps, icon: FileText, color: 'text-violet-400' },
+   266→   266→            { label: 'Active Auctions', value: s.totalActiveAuctions, icon: Layers, color: 'text-orange-400' },
+   267→   267→            { label: 'Fraud Flags', value: s.totalFraudFlags, icon: AlertOctagon, color: 'text-red-400' },
+   268→   268→            { label: 'Loan Stacking', value: s.loanStackingDetections, icon: AlertTriangle, color: 'text-red-400' },
+   269→   269→            { label: 'Avg Risk', value: s.avgRiskScore, icon: TrendingUp, color: s.avgRiskScore > 60 ? 'text-red-400' : 'text-emerald-400' },
+   270→   270→            { label: 'Sources', value: s.sourcesActive, icon: Globe, color: 'text-cyan-400' },
+   271→   271→            { label: 'Checks Today', value: s.riskChecksToday, icon: Zap, color: 'text-amber-400' },
+   272→   272→          ].map((kpi) => (
+   273→   273→            <Card key={kpi.label} className="bg-slate-900/50 border-slate-800">
+   274→   274→              <CardContent className="p-3">
+   275→   275→                <div className="flex items-center gap-2 mb-1">
+   276→   276→                  <kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} />
+   277→   277→                  <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">{kpi.label}</span>
+   278→   278→                </div>
+   279→   279→                <p className="text-xl font-bold text-white">{kpi.value}</p>
+   280→   280→              </CardContent>
+   281→   281→            </Card>
+   282→   282→          ))}
+   283→   283→        </div>
+   284→   284→
+   285→   285→        {/* ─── MAIN TABS ─────────────────────────────────────────────────────── */}
+   286→   286→        <Tabs defaultValue="risk-check" className="space-y-4">
+   287→   287→          <TabsList className="bg-slate-900 border border-slate-800">
+   288→   288→            <TabsTrigger value="risk-check" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-xs">
+   289→   289→              <Shield className="h-3.5 w-3.5 mr-1.5" /> Risk Check
+   290→   290→            </TabsTrigger>
+   291→   291→            <TabsTrigger value="vehicles" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-xs">
+   292→   292→              <Car className="h-3.5 w-3.5 mr-1.5" /> Vehicle Graph
+   293→   293→            </TabsTrigger>
+   294→   294→            <TabsTrigger value="alerts" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-xs">
+   295→   295→              <AlertTriangle className="h-3.5 w-3.5 mr-1.5" /> Fraud Alerts
+   296→   296→            </TabsTrigger>
+   297→   297→            <TabsTrigger value="sources" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-xs">
+   298→   298→              <Globe className="h-3.5 w-3.5 mr-1.5" /> Sources
+   299→   299→            </TabsTrigger>
+   300→   300→          </TabsList>
+   301→   301→
+   302→   302→          {/* ─── RISK CHECK TAB ──────────────────────────────────────────────── */}
+   303→   303→          <TabsContent value="risk-check" className="space-y-4">
+   304→   304→            <div className="grid lg:grid-cols-5 gap-4">
+   305→   305→              {/* Form */}
+   306→   306→              <Card className="lg:col-span-2 bg-slate-900/50 border-slate-800">
+   307→   307→                <CardHeader className="pb-3">
+   308→   308→                  <CardTitle className="text-sm font-semibold text-white">Collateral Risk Check</CardTitle>
+   309→   309→                  <CardDescription className="text-xs text-slate-500">
+   310→   310→                    Query the knowledge graph for vehicle collateral risk. Uses hybrid entity resolution (Jaro-Winkler + Levenshtein + Transformer embeddings) and graph-based fraud detection.
+   311→   311→                  </CardDescription>
+   312→   312→                </CardHeader>
+   313→   313→                <CardContent className="space-y-4">
+   314→   314→                  <div className="space-y-2">
+   315→   315→                    <Label className="text-xs text-slate-400 font-mono">Registration Number</Label>
+   316→   316→                    <Input
+   317→   317→                      placeholder="e.g. KDA 123X"
+   318→   318→                      value={plate}
+   319→   319→                      onChange={e => setPlate(e.target.value)}
+   320→   320→                      className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-600 font-mono"
+   321→   321→                      onKeyDown={e => e.key === 'Enter' && handleRiskCheck()}
+   322→   322→                    />
+   323→   323→                    <p className="text-[10px] text-slate-600">Kenyan format: KXX 123X (private), GK/GKA/GKB (government)</p>
+   324→   324→                  </div>
+   325→   325→                  <div className="space-y-2">
+   326→   326→                    <Label className="text-xs text-slate-400 font-mono">Chassis Number (optional)</Label>
+   327→   327→                    <Input
+   328→   328→                      placeholder="e.g. JTEBU3JR3B5045181"
+   329→   329→                      value={chassis}
+   330→   330→                      onChange={e => setChassis(e.target.value)}
+   331→   331→                      className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-600 font-mono text-xs"
+   332→   332→                    />
+   333→   333→                  </div>
+   334→   334→                  <div className="grid grid-cols-2 gap-3">
+   335→   335→                    <div className="space-y-2">
+   336→   336→                      <Label className="text-xs text-slate-400 font-mono">Requestor MFI ID</Label>
+   337→   337→                      <Input value={mfiId} onChange={e => setMfiId(e.target.value)} className="bg-slate-800 border-slate-700 text-white font-mono text-xs" />
+   338→   338→                    </div>
+   339→   339→                    <div className="space-y-2">
+   340→   340→                      <Label className="text-xs text-slate-400 font-mono">Loan Amount (KES)</Label>
+   341→   341→                      <Input value={loanAmount} onChange={e => setLoanAmount(e.target.value)} className="bg-slate-800 border-slate-700 text-white font-mono text-xs" />
+   342→   342→                    </div>
+   343→   343→                  </div>
+   344→   344→                  <Button
+   345→   345→                    onClick={handleRiskCheck}
+   346→   346→                    disabled={checking || !plate}
+   347→   347→                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm"
+   348→   348→                  >
+   349→   349→                    {checking ? (
+   350→   350→                      <><div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" /> Analyzing Graph...</>
+   351→   351→                    ) : (
+   352→   352→                      <><Shield className="h-4 w-4 mr-2" /> Run Risk Check</>
+   353→   353→                    )}
+   354→   354→                  </Button>
+   355→   355→
+   356→   356→                  {/* Entity Resolution Demo */}
+   357→   357→                  <Separator className="bg-slate-800" />
+   358→   358→                  <div className="space-y-2">
+   359→   359→                    <Label className="text-xs text-slate-400 font-mono">Quick Search</Label>
+   360→   360→                    <div className="flex gap-2">
+   361→   361→                      <Input
+   362→   362→                        placeholder="Search plates, makes, models..."
+   363→   363→                        value={searchQ}
+   364→   364→                        onChange={e => setSearchQ(e.target.value)}
+   365→   365→                        className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-600 font-mono text-xs"
+   366→   366→                        onKeyDown={e => e.key === 'Enter' && handleSearch()}
+   367→   367→                      />
+   368→   368→                      <Button variant="outline" size="sm" onClick={handleSearch} className="border-slate-700 text-slate-400 hover:text-white shrink-0">
+   369→   369→                        <Search className="h-4 w-4" />
+   370→   370→                      </Button>
+   371→   371→                    </div>
+   372→   372→                    {searchResults.length > 0 && (
+   373→   373→                      <div className="max-h-32 overflow-y-auto space-y-1 mt-2">
+   374→   374→                        {searchResults.map((v: Record<string, unknown>) => (
+   375→   375→                          <button
+   376→   376→                            key={v.id as string}
+   377→   377→                            onClick={() => setPlate(v.raw_plate as string)}
+   378→   378→                            className="w-full text-left p-1.5 rounded bg-slate-800/50 hover:bg-slate-800 text-xs font-mono text-slate-300 flex justify-between"
+   379→   379→                          >
+   380→   380→                            <span>{v.raw_plate as string} — {v.make as string} {v.model as string}</span>
+   381→   381→                            <Badge variant="outline" className="text-[9px] h-4 border-slate-700">{v.plate_category as string}</Badge>
+   382→   382→                          </button>
+   383→   383→                        ))}
+   384→   384→                      </div>
+   385→   385→                    )}
+   386→   386→                  </div>
+   387→   387→                </CardContent>
+   388→   388→              </Card>
+   389→   389→
+   390→   390→              {/* Results */}
+   391→   391→              <Card className="lg:col-span-3 bg-slate-900/50 border-slate-800">
+   392→   392→                <CardHeader className="pb-3">
+   393→   393→                  <CardTitle className="text-sm font-semibold text-white">Risk Analysis Result</CardTitle>
+   394→   394→                </CardHeader>
+   395→   395→                <CardContent>
+   396→   396→                  {riskResult ? (
+   397→   397→                    <div className="space-y-4">
+   398→   398→                      {/* Score Gauge */}
+   399→   399→                      <div className={`p-4 rounded-lg border ${getRiskBg(riskResult.risk_level)}`}>
+   400→   400→                        <div className="flex items-center justify-between mb-2">
+   401→   401→                          <div>
+   402→   402→                            <p className="text-xs font-mono text-slate-500">Request ID</p>
+   403→   403→                            <p className="text-sm font-mono text-slate-700">{riskResult.request_id}</p>
+   404→   404→                          </div>
+   405→   405→                          <div className="text-right">
+   406→   406→                            <p className={`text-4xl font-black ${getRiskColor(riskResult.risk_level)}`}>
+   407→   407→                              {riskResult.risk_score}
+   408→   408→                            </p>
+   409→   409→                            <Badge variant={getRiskBadgeVariant(riskResult.risk_level)} className="text-xs mt-1">
+   410→   410→                              {riskResult.risk_level}
+   411→   411→                            </Badge>
+   412→   412→                          </div>
+   413→   413→                        </div>
+   414→   414→                        <Progress
+   415→   415→                          value={riskResult.risk_score}
+   416→   416→                          className="h-2 bg-slate-200"
+   417→   417→                        />
+   418→   418→                        <div className="flex items-center justify-between mt-2">
+   419→   419→                          <div className="flex items-center gap-1.5">
+   420→   420→                            {getRecIcon(riskResult.recommendation)}
+   421→   421→                            <span className="text-xs font-semibold text-slate-700">
+   422→   422→                              {riskResult.recommendation.replace(/_/g, ' ')}
+   423→   423→                            </span>
+   424→   424→                          </div>
+   425→   425→                          <span className="text-[10px] font-mono text-slate-500">
+   426→   426→                            Confidence: {(riskResult.confidence * 100).toFixed(0)}%
+   427→   427→                          </span>
+   428→   428→                        </div>
+   429→   429→                      </div>
+   430→   430→
+   431→   431→                      {/* Flagged Issues */}
+   432→   432→                      {riskResult.flagged_issues.length > 0 && (
+   433→   433→                        <div>
+   434→   434→                          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Flagged Issues</p>
+   435→   435→                          <div className="space-y-1.5">
+   436→   436→                            {riskResult.flagged_issues.map((issue: string) => (
+   437→   437→                              <div key={issue} className="flex items-center gap-2 p-2 rounded bg-red-950/30 border border-red-900/30">
+   438→   438→                                <AlertOctagon className="h-3.5 w-3.5 text-red-400 shrink-0" />
+   439→   439→                                <span className="text-xs text-red-300 font-mono">{issue.replace(/_/g, ' ')}</span>
+   440→   440→                              </div>
+   441→   441→                            ))}
+   442→   442→                          </div>
+   443→   443→                        </div>
+   444→   444→                      )}
+   445→   445→
+   446→   446→                      {/* Entity Summary */}
+   447→   447→                      {riskResult.entity_summary && (
+   448→   448→                        <div>
+   449→   449→                          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Entity Summary</p>
+   450→   450→                          <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+   451→   451→                            {Object.entries(riskResult.entity_summary).filter(([, v]) => v !== null && v !== undefined).map(([k, v]) => (
+   452→   452→                              <div key={k} className="p-2 rounded bg-slate-800/50">
+   453→   453→                                <span className="text-slate-500">{k.replace(/_/g, ' ')}: </span>
+   454→   454→                                <span className="text-slate-300">{String(v)}</span>
+   455→   455→                              </div>
+   456→   456→                            ))}
+   457→   457→                          </div>
+   458→   458→                        </div>
+   459→   459→                      )}
+   460→   460→
+   461→   461→                      {/* Graph Analysis */}
+   462→   462→                      {riskResult.graph_analysis && (
+   463→   463→                        <div>
+   464→   464→                          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Graph Analysis</p>
+   465→   465→                          <div className="grid grid-cols-3 gap-2">
+   466→   466→                            {Object.entries(riskResult.graph_analysis).filter(([, v]) => v !== null).map(([k, v]) => (
+   467→   467→                              <div key={k} className="p-2 rounded bg-slate-800/50 text-center">
+   468→   468→                                <p className="text-lg font-bold text-white">{String(v)}</p>
+   469→   469→                                <p className="text-[10px] text-slate-500 font-mono">{k.replace(/_/g, ' ')}</p>
+   470→   470→                              </div>
+   471→   471→                            ))}
+   472→   472→                          </div>
+   473→   473→                        </div>
+   474→   474→                      )}
+   475→   475→
+   476→   476→                      {/* Historical Footprints */}
+   477→   477→                      {riskResult.historical_footprints && riskResult.historical_footprints.length > 0 && (
+   478→   478→                        <div>
+   479→   479→                          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Historical Footprints</p>
+   480→   480→                          <div className="space-y-1.5 max-h-40 overflow-y-auto">
+   481→   481→                            {riskResult.historical_footprints.map((fp: Record<string, unknown>, i: number) => (
+   482→   482→                              <div key={i} className="p-2 rounded bg-slate-800/30 border border-slate-800 text-xs">
+   483→   483→                                <div className="flex justify-between items-center mb-1">
+   484→   484→                                  <Badge variant="outline" className="text-[9px] h-4 border-slate-700 text-slate-400">{fp.source_type as string}</Badge>
+   485→   485→                                  <span className="text-[10px] text-slate-600">{fp.recorded_date as string}</span>
+   486→   486→                                </div>
+   487→   487→                                <p className="text-slate-400 font-mono">{fp.entity as string}</p>
+   488→   488→                                <p className="text-slate-500 mt-0.5">{fp.details as string}</p>
+   489→   489→                              </div>
+   490→   490→                            ))}
+   491→   491→                          </div>
+   492→   492→                        </div>
+   493→   493→                      )}
+   494→   494→
+   495→   495→                      {/* Score Breakdown */}
+   496→   496→                      {riskResult.score_breakdown && (
+   497→   497→                        <div>
+   498→   498→                          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Score Breakdown</p>
+   499→   499→                          <div className="space-y-1">
+   500→   500→                            {Object.entries(riskResult.score_breakdown).map(([k, v]) => (
+   501→   501→                              <div key={k} className="flex justify-between text-xs font-mono p-1.5 rounded bg-slate-800/30">
+   502→   502→                                <span className="text-slate-500">{k.replace(/([A-Z])/g, ' $1').trim()}</span>
+   503→   503→                                <span className={v > 0 ? 'text-red-400' : 'text-slate-400'}>+{v}</span>
+   504→   504→                              </div>
+   505→   505→                            ))}
+   506→   506→                          </div>
+   507→   507→                        </div>
+   508→   508→                      )}
+   509→   509→
+   510→   510→                      {/* Compliance */}
+   511→   511→                      {riskResult.compliance_notes && (
+   512→   512→                        <div className="p-3 rounded bg-emerald-950/20 border border-emerald-900/30">
+   513→   513→                          <p className="text-[10px] font-mono text-emerald-500 mb-1">COMPLIANCE (Kenya DPA 2019)</p>
+   514→   514→                          <p className="text-xs text-emerald-400">{riskResult.compliance_notes.data_source as string}</p>
+   515→   515→                          <p className="text-[10px] text-emerald-600 mt-1">ODPC: {riskResult.compliance_notes.odpc_registration as string} • Retention: {riskResult.compliance_notes.retention_policy as string}</p>
+   516→   516→                        </div>
+   517→   517→                      )}
+   518→   518→                    </div>
+   519→   519→                  ) : (
+   520→   520→                    <div className="flex flex-col items-center justify-center py-16 text-center">
+   521→   521→                      <Shield className="h-12 w-12 text-slate-700 mb-4" />
+   522→   522→                      <p className="text-sm text-slate-500 mb-1">Enter a registration number to run a risk check</p>
+   523→   523→                      <p className="text-xs text-slate-600">Try: KDA 123X (loan stacking), KAE 321M (clean), KDF 654Z (multi-yard)</p>
+   524→   524→                    </div>
+   525→   525→                  )}
+   526→   526→                </CardContent>
+   527→   527→              </Card>
+   528→   528→            </div>
+   529→   529→
+   530→   530→            {/* Recent Checks */}
+   531→   531→            {data && data.recentChecks.length > 0 && (
+   532→   532→              <Card className="bg-slate-900/50 border-slate-800">
+   533→   533→                <CardHeader className="pb-2">
+   534→   534→                  <CardTitle className="text-sm font-semibold text-white flex items-center gap-2">
+   535→   535→                    <Clock className="h-4 w-4 text-slate-500" /> Recent Risk Checks
+   536→   536→                  </CardTitle>
+   537→   537→                </CardHeader>
+   538→   538→                <CardContent>
+   539→   539→                  <div className="overflow-x-auto">
+   540→   540→                    <table className="w-full text-xs font-mono">
+   541→   541→                      <thead>
+   542→   542→                        <tr className="border-b border-slate-800">
+   543→   543→                          <th className="text-left py-2 text-slate-500">Request</th>
+   544→   544→                          <th className="text-left py-2 text-slate-500">Plate</th>
+   545→   545→                          <th className="text-center py-2 text-slate-500">Score</th>
+   546→   546→                          <th className="text-center py-2 text-slate-500">Level</th>
+   547→   547→                          <th className="text-center py-2 text-slate-500">Decision</th>
+   548→   548→                          <th className="text-right py-2 text-slate-500">Latency</th>
+   549→   549→                          <th className="text-right py-2 text-slate-500">Time</th>
+   550→   550→                        </tr>
+   551→   551→                      </thead>
+   552→   552→                      <tbody>
+   553→   553→                        {data.recentChecks.map(rc => (
+   554→   554→                          <tr key={rc.requestId} className="border-b border-slate-800/50 hover:bg-slate-800/30">
+   555→   555→                            <td className="py-2 text-slate-400">{rc.requestId}</td>
+   556→   556→                            <td className="py-2 text-white">{rc.queryPlate}</td>
+   557→   557→                            <td className="py-2 text-center">
+   558→   558→                              <span className={`font-bold ${getRiskColor(rc.riskLevel)}`}>{rc.riskScore}</span>
+   559→   559→                            </td>
+   560→   560→                            <td className="py-2 text-center">
+   561→   561→                              <Badge variant={getRiskBadgeVariant(rc.riskLevel)} className="text-[9px]">{rc.riskLevel}</Badge>
+   562→   562→                            </td>
+   563→   563→                            <td className="py-2 text-center">{getRecIcon(rc.recommendation)}</td>
+   564→   564→                            <td className="py-2 text-right text-slate-400">{rc.responseTimeMs}ms</td>
+   565→   565→                            <td className="py-2 text-right text-slate-500">{timeAgo(rc.createdAt)}</td>
+   566→   566→                          </tr>
+   567→   567→                        ))}
+   568→   568→                      </tbody>
+   569→   569→                    </table>
+   570→   570→                  </div>
+   571→   571→                </CardContent>
+   572→   572→              </Card>
+   573→   573→            )}
+   574→   574→          </TabsContent>
+   575→   575→
+   576→   576→          {/* ─── VEHICLE GRAPH TAB ───────────────────────────────────────────── */}
+   577→   577→          <TabsContent value="vehicles" className="space-y-4">
+   578→   578→            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+   579→   579→              {data?.vehicles.map(v => (
+   580→   580→                <Card key={v.id} className={`bg-slate-900/50 border-slate-800 ${v.fraudFlags.length > 0 ? 'ring-1 ring-red-900/30' : ''}`}>
+   581→   581→                  <CardContent className="p-4 space-y-3">
+   582→   582→                    <div className="flex items-start justify-between">
+   583→   583→                      <div>
+   584→   584→                        <p className="text-sm font-bold text-white font-mono">{v.rawPlate}</p>
+   585→   585→                        <p className="text-xs text-slate-400">{v.make} {v.model} {v.year && `(${v.year})`}</p>
+   586→   586→                      </div>
+   587→   587→                      <div className="flex gap-1">
+   588→   588→                        {v.plateCategory && (
+   589→   589→                          <Badge variant="outline" className="text-[9px] h-4 border-slate-700 text-slate-400">
+   590→   590→                            {v.plateCategory}
+   591→   591→                          </Badge>
+   592→   592→                        )}
+   593→   593→                        {v.fraudFlags.length > 0 && (
+   594→   594→                          <Badge variant="destructive" className="text-[9px] h-4">
+   595→   595→                            {v.fraudFlags.length} flag{v.fraudFlags.length > 1 ? 's' : ''}
+   596→   596→                          </Badge>
+   597→   597→                        )}
+   598→   598→                      </div>
+   599→   599→                    </div>
+   600→   600→
+   601→   601→                    <div className="grid grid-cols-3 gap-2 text-center">
+   602→   602→                      <div className="p-1.5 rounded bg-slate-800/50">
+   603→   603→                        <p className="text-sm font-bold text-white">{v.activeLoans}</p>
+   604→   604→                        <p className="text-[9px] text-slate-500">Loans</p>
+   605→   605→                      </div>
+   606→   606→                      <div className="p-1.5 rounded bg-slate-800/50">
+   607→   607→                        <p className="text-sm font-bold text-white">{v.activeAuctions}</p>
+   608→   608→                        <p className="text-[9px] text-slate-500">Auctions</p>
+   609→   609→                      </div>
+   610→   610→                      <div className="p-1.5 rounded bg-slate-800/50">
+   611→   611→                        <p className="text-sm font-bold text-white">{v.fraudRingSize}</p>
+   612→   612→                        <p className="text-[9px] text-slate-500">Ring Size</p>
+   613→   613→                      </div>
+   614→   614→                    </div>
+   615→   615→
+   616→   616→                    {v.lenders.length > 0 && (
+   617→   617→                      <div className="flex flex-wrap gap-1">
+   618→   618→                        {v.lenders.map(l => (
+   619→   619→                          <Badge key={l} variant="outline" className="text-[9px] h-4 border-violet-800 text-violet-400">
+   620→   620→                            <Building2 className="h-2.5 w-2.5 mr-0.5" />{l}
+   621→   621→                          </Badge>
+   622→   622→                        ))}
+   623→   623→                      </div>
+   624→   624→                    )}
+   625→   625→
+   626→   626→                    {v.currentYard && (
+   627→   627→                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+   628→   628→                        <MapPin className="h-3 w-3" /> {v.currentYard}
+   629→   629→                      </div>
+   630→   630→                    )}
+   631→   631→
+   632→   632→                    {v.fraudFlags.length > 0 && (
+   633→   633→                      <div className="space-y-1">
+   634→   634→                        {v.fraudFlags.map((f, i) => (
+   635→   635→                          <div key={i} className="flex items-center gap-1.5 text-[10px] text-red-400 font-mono">
+   636→   636→                            <AlertTriangle className="h-3 w-3 shrink-0" /> {f.type.replace(/_/g, ' ')}
+   637→   637→                          </div>
+   638→   638→                        ))}
+   639→   639→                      </div>
+   640→   640→                    )}
+   641→   641→
+   642→   642→                    <div className="flex items-center justify-between text-[10px] text-slate-600 font-mono pt-1 border-t border-slate-800">
+   643→   643→                      <span>Centrality: {v.degreeCentrality}</span>
+   644→   644→                      <button onClick={() => { setPlate(v.rawPlate); }} className="text-emerald-500 hover:text-emerald-400 flex items-center gap-1">
+   645→   645→                        <Eye className="h-3 w-3" /> Check
+   646→   646→                      </button>
+   647→   647→                    </div>
+   648→   648→                  </CardContent>
+   649→   649→                </Card>
+   650→   650→              ))}
+   651→   651→            </div>
+   652→   652→          </TabsContent>
+   653→   653→
+   654→   654→          {/* ─── FRAUD ALERTS TAB ────────────────────────────────────────────── */}
+   655→   655→          <TabsContent value="alerts" className="space-y-4">
+   656→   656→            <div className="grid lg:grid-cols-3 gap-4">
+   657→   657→              {/* Flag Type Distribution */}
+   658→   658→              <Card className="bg-slate-900/50 border-slate-800">
+   659→   659→                <CardHeader className="pb-2">
+   660→   660→                  <CardTitle className="text-sm font-semibold text-white">Flag Distribution</CardTitle>
+   661→   661→                </CardHeader>
+   662→   662→                <CardContent className="space-y-2">
+   663→   663→                  {Object.entries(data?.flagTypes ?? {}).sort((a, b) => b[1] - a[1]).map(([type, count]) => {
+   664→   664→                    const max = Math.max(...Object.values(data?.flagTypes ?? { x: 1 }));
+   665→   665→                    return (
+   666→   666→                      <div key={type} className="space-y-1">
+   667→   667→                        <div className="flex justify-between text-xs font-mono">
+   668→   668→                          <span className="text-slate-400">{type.replace(/_/g, ' ')}</span>
+   669→   669→                          <span className="text-white font-bold">{count}</span>
+   670→   670→                        </div>
+   671→   671→                        <Progress value={(count / max) * 100} className="h-1.5 bg-slate-800" />
+   672→   672→                      </div>
+   673→   673→                    );
+   674→   674→                  })}
+   675→   675→                </CardContent>
+   676→   676→              </Card>
+   677→   677→
+   678→   678→              {/* Lender Exposure */}
+   679→   679→              <Card className="lg:col-span-2 bg-slate-900/50 border-slate-800">
+   680→   680→                <CardHeader className="pb-2">
+   681→   681→                  <CardTitle className="text-sm font-semibold text-white">Lender Exposure (Active Loan Volume)</CardTitle>
+   682→   682→                </CardHeader>
+   683→   683→                <CardContent className="space-y-2">
+   684→   684→                  {Object.entries(data?.lenderExposure ?? {}).sort((a, b) => b[1] - a[1]).map(([lender, amount]) => {
+   685→   685→                    const max = Math.max(...Object.values(data?.lenderExposure ?? { x: 1 }));
+   686→   686→                    return (
+   687→   687→                      <div key={lender} className="space-y-1">
+   688→   688→                        <div className="flex justify-between text-xs font-mono">
+   689→   689→                          <span className="text-slate-400 flex items-center gap-1.5">
+   690→   690→                            <Building2 className="h-3 w-3" /> {lender}
+   691→   691→                          </span>
+   692→   692→                          <span className="text-white font-bold">{formatKES(amount)}</span>
+   693→   693→                        </div>
+   694→   694→                        <Progress value={(amount / max) * 100} className="h-1.5 bg-slate-800" />
+   695→   695→                      </div>
+   696→   696→                    );
+   697→   697→                  })}
+   698→   698→                </CardContent>
+   699→   699→              </Card>
+   700→   700→            </div>
+   701→   701→
+   702→   702→            {/* Flagged vehicles list */}
+   703→   703→            <Card className="bg-slate-900/50 border-slate-800">
+   704→   704→              <CardHeader className="pb-2">
+   705→   705→                <CardTitle className="text-sm font-semibold text-white">Flagged Vehicles</CardTitle>
+   706→   706→              </CardHeader>
+   707→   707→              <CardContent>
+   708→   708→                <div className="space-y-2">
+   709→   709→                  {data?.vehicles.filter(v => v.fraudFlags.length > 0).map(v => (
+   710→   710→                    <div key={v.id} className="p-3 rounded-lg bg-red-950/10 border border-red-900/20">
+   711→   711→                      <div className="flex items-start justify-between mb-2">
+   712→   712→                        <div>
+   713→   713→                          <p className="text-sm font-bold text-white font-mono">{v.rawPlate} — {v.make} {v.model}</p>
+   714→   714→                          <p className="text-[10px] text-slate-500">{v.activeLoans} active loans • {v.lenders.length} lenders • Ring: {v.fraudRingSize}</p>
+   715→   715→                        </div>
+   716→   716→                        <button onClick={() => { setPlate(v.rawPlate); }} className="text-[10px] text-emerald-500 hover:text-emerald-400 font-mono flex items-center gap-1">
+   717→   717→                          <Eye className="h-3 w-3" /> Inspect
+   718→   718→                        </button>
+   719→   719→                      </div>
+   720→   720→                      <div className="flex flex-wrap gap-1.5">
+   721→   721→                        {v.fraudFlags.map((f, i) => (
+   722→   722→                          <Badge key={i} variant="destructive" className="text-[9px]">
+   723→   723→                            <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> {f.type.replace(/_/g, ' ')}
+   724→   724→                          </Badge>
+   725→   725→                        ))}
+   726→   726→                      </div>
+   727→   727→                    </div>
+   728→   728→                  ))}
+   729→   729→                </div>
+   730→   730→              </CardContent>
+   731→   731→            </Card>
+   732→   732→          </TabsContent>
+   733→   733→
+   734→   734→          {/* ─── SOURCES TAB ─────────────────────────────────────────────────── */}
+   735→   735→          <TabsContent value="sources" className="space-y-4">
+   736→   736→            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+   737→   737→              {data?.sources.map(src => (
+   738→   738→                <Card key={src.name} className="bg-slate-900/50 border-slate-800">
+   739→   739→                  <CardContent className="p-4 space-y-3">
+   740→   740→                    <div className="flex items-start justify-between">
+   741→   741→                      <div>
+   742→   742→                        <p className="text-xs font-semibold text-white">{src.name}</p>
+   743→   743→                        <p className="text-[10px] text-slate-500 font-mono truncate max-w-[180px]">{src.url}</p>
+   744→   744→                      </div>
+   745→   745→                      <Badge
+   746→   746→                        variant={src.lastStatus === 'SUCCESS' ? 'secondary' : src.lastStatus === 'PARTIAL' ? 'outline' : 'destructive'}
+   747→   747→                        className="text-[9px] h-4"
+   748→   748→                      >
+   749→   749→                        {src.lastStatus ?? 'PENDING'}
+   750→   750→                      </Badge>
+   751→   751→                    </div>
+   752→   752→                    <div className="grid grid-cols-3 gap-2 text-center">
+   753→   753→                      <div>
+   754→   754→                        <p className="text-xs font-bold text-white">{src.recordsFound}</p>
+   755→   755→                        <p className="text-[9px] text-slate-500">Records</p>
+   756→   756→                      </div>
+   757→   757→                      <div>
+   758→   758→                        <p className="text-xs font-bold text-white">{src.scrapeIntervalHours}h</p>
+   759→   759→                        <p className="text-[9px] text-slate-500">Interval</p>
+   760→   760→                      </div>
+   761→   761→                      <div>
+   762→   762→                        <Badge variant="outline" className="text-[9px] h-4 border-slate-700">
+   763→   763→                          {src.complexity}
+   764→   764→                        </Badge>
+   765→   765→                      </div>
+   766→   766→                    </div>
+   767→   767→                    <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
+   768→   768→                      <Clock className="h-3 w-3" />
+   769→   769→                      {src.lastScrapedAt ? timeAgo(src.lastScrapedAt) : 'Never'}
+   770→   770→                    </div>
+   771→   771→                    <Badge variant="outline" className="text-[9px] border-slate-700 text-slate-500">
+   772→   772→                      {src.category.replace(/_/g, ' ')}
+   773→   773→                    </Badge>
+   774→   774→                  </CardContent>
+   775→   775→                </Card>
+   776→   776→              ))}
+   777→   777→            </div>
+   778→   778→
+   779→   779→            {/* Anti-Detection Architecture */}
+   780→   780→            <Card className="bg-slate-900/50 border-slate-800">
+   781→   781→              <CardHeader className="pb-2">
+   782→   782→                <CardTitle className="text-sm font-semibold text-white flex items-center gap-2">
+   783→   783→                  <Fingerprint className="h-4 w-4 text-emerald-500" /> Anti-Detection Stack (2026 Standards)
+   784→   784→                </CardTitle>
+   785→   785→              </CardHeader>
+   786→   786→              <CardContent>
+   787→   787→                <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+   788→   788→                  {[
+   789→   789→                    { layer: 'IP/Proxy', solution: 'Bright Data Residential', detail: 'Kenya sticky sessions, rotate per request for open sources' },
+   790→   790→                    { layer: 'TLS Fingerprint', solution: 'Playwright Chrome Stack', detail: 'JA3/JA4 safe — never use Python requests (WAF fingerprint)' },
+   791→   791→                    { layer: 'Browser', solution: 'Octo Browser / GoLogin', detail: 'Passes Pixelscan, Iphey, CreepJS — real GPU fingerprinting' },
+   792→   792→                    { layer: 'Behavior', solution: 'Human-like Delays', detail: 'Random 1-5s delays, mouse movements, scroll patterns, session warming' },
+   793→   793→                    { layer: 'CAPTCHA', solution: '2Captcha / CapSolver', detail: '$1-3 per 1,000 solves — prevention first, solve only when unavoidable' },
+   794→   794→                  ].map(item => (
+   795→   795→                    <div key={item.layer} className="p-3 rounded bg-slate-800/50 border border-slate-800">
+   796→   796→                      <p className="font-mono text-emerald-400 mb-1">{item.layer}</p>
+   797→   797→                      <p className="font-semibold text-white mb-1">{item.solution}</p>
+   798→   798→                      <p className="text-[10px] text-slate-500">{item.detail}</p>
+   799→   799→                    </div>
+   800→   800→                  ))}
+   801→   801→                </div>
+   802→   802→              </CardContent>
+   803→   803→            </Card>
+   804→   804→          </TabsContent>
+   805→   805→        </Tabs>
+   806→   806→
+   807→   807→        {/* ─── FOOTER ────────────────────────────────────────────────────────── */}
+   808→   808→        <footer className="mt-8 py-4 border-t border-slate-800 text-center">
+   809→   809→          <p className="text-[10px] text-slate-600 font-mono">
+   810→   810→            Vehicle Collateral Risk Engine v1.0 • Graph-Native Fraud Detection • Kenya DPA 2019 Compliant (ODPC DCP-2026-8847) • Zero PII Architecture
+   811→   811→          </p>
+   812→   812→          <p className="text-[10px] text-slate-700 font-mono mt-1">
+   813→   813→            Entity Resolution: Hybrid Transformer-Gather + Fuzzy-Reconsider (arXiv:2509.17470) • Jaro-Winkler + Levenshtein (arXiv:1607.00992) • tgds/egds Chase (arXiv:2303.07469)
+   814→   814→          </p>
+   815→   815→        </footer>
+   816→   816→      </main>
+   817→   817→    </div>
+   818→   818→  );
+   819→   819→}
+   820→   820→
