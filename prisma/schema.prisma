@@ -1,0 +1,247 @@
+// B2B Vehicle Collateral Risk Engine — Kenyan Market
+// Knowledge Graph modeled as relational tables (Neo4j conceptual mapping)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── CORE VEHICLE ENTITY ───────────────────────────────────────────────────────
+
+model Vehicle {
+  id                  String   @id @default(cuid())
+  normalizedPlate     String   @unique  // e.g. "KDA123X" — uppercase, no spaces
+  rawPlate            String              // original input e.g. "KDA 123X"
+  make                String?             // e.g. "TOYOTA"
+  model               String?             // e.g. "HILUX"
+  variant             String?             // e.g. "D/CABIN SR 4WD"
+  year                Int?
+  color               String?
+  engineNumber        String?
+  normalizedChassis   String?  @unique    // uppercase, O→0 corrected
+  rawChassis          String?
+  plateCategory       String?             // PRIVATE, GOVERNMENT, DIPLOMATIC, GKA, GKB, GKN, GKY
+  countyCode          String?             // KA, KB, KC, KD etc.
+
+  // Resolution metadata
+  resolutionConfidence Float    @default(1.0)
+  resolvedFromIds     String?              // JSON array of merged vehicle IDs
+  masterVehicleId     String?              // points to the master if this is a duplicate
+
+  // Graph features (computed)
+  degreeCentrality    Float    @default(0)
+  clusteringCoeff     Float    @default(0)
+  fraudRingSize       Int      @default(0)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  loanApplications    LoanApplication[]
+  auctionListings     AuctionListing[]
+  storageYardStays   VehicleYardStay[]
+  riskChecks          RiskCheck[]
+  documents           DocumentReference[]
+  flags               FraudFlag[]
+}
+
+// ─── LOAN / COLLATERAL TRACKING ────────────────────────────────────────────────
+
+model Lender {
+  id          String   @id @default(cuid())
+  name        String              // e.g. "Family Bank", "Kingdom SACCO"
+  type        String              // BANK, MFI, SACCO, DCP
+  licenseNo   String?
+  isRegulated Boolean  @default(true)  // CBK regulated?
+  portalUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  loanApplications LoanApplication[]
+}
+
+model Borrower {
+  id            String   @id @default(cuid())
+  idHash        String   @unique  // SHA-256 of national ID — no PII stored
+  riskTier      String   @default("UNKNOWN")  // LOW, MEDIUM, HIGH, CRITICAL
+  knownAliases  String?             // JSON array of name hashes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  loanApplications LoanApplication[]
+}
+
+model LoanApplication {
+  id              String   @id @default(cuid())
+  vehicleId       String
+  lenderId        String
+  borrowerId      String
+  loanAmountKes   Int                  // in KES
+  status          String   @default("ACTIVE")  // ACTIVE, REPAID, DEFAULTED, WRITTEN_OFF
+  collateralType  String   @default("LOGBOOK")  // LOGBOOK, CHATTELS_MORTGAGE, DUAL
+  caveatRegistered Boolean  @default(false)     // registered on eCitizen/NTSA?
+  caveatDate      DateTime?
+  disbursementDate DateTime?
+  maturityDate    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  lender    Lender   @relation(fields: [lenderId], references: [id])
+  borrower  Borrower @relation(fields: [borrowerId], references: [id])
+}
+
+// ─── AUCTION / REPOSSESSION TRACKING ───────────────────────────────────────────
+
+model Auctioneer {
+  id          String   @id @default(cuid())
+  name        String              // e.g. "Garam Investments", "Phillips International"
+  licenseNo   String?
+  location    String?
+  phone       String?
+  website     String?
+  specialization String?          // BANK_REPOSSESSION, GOVERNMENT_DISPOSAL, SALVAGE
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  auctionListings AuctionListing[]
+}
+
+model StorageYard {
+  id          String   @id @default(cuid())
+  name        String              // e.g. "Valuers Yard Enterprises"
+  location    String              // e.g. "Thika Road, Nairobi"
+  county      String?             // e.g. "NAIROBI", "KISUMU"
+  phone       String?
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vehicleStays VehicleYardStay[]
+}
+
+model VehicleYardStay {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  yardId      String
+  entryDate   DateTime?
+  exitDate    DateTime?
+  isCurrent   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  vehicle     Vehicle     @relation(fields: [vehicleId], references: [id])
+  yard        StorageYard @relation(fields: [yardId], references: [id])
+}
+
+model AuctionListing {
+  id              String   @id @default(cuid())
+  vehicleId       String
+  auctioneerId    String?
+  sourceType      String              // BANK_AUCTION, GOVERNMENT_DISPOSAL, KRA_DISPOSAL, PRIVATE
+  sourceName      String              // e.g. "Family Bank", "KRA"
+  reservePriceKes Int?
+  salePriceKes    Int?
+  auctionDate     DateTime?
+  listingDate     DateTime?
+  basis           String   @default("AS_IS_WHERE_IS")
+  bidUrl          String?             // link to original listing
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  vehicle    Vehicle     @relation(fields: [vehicleId], references: [id])
+  auctioneer Auctioneer? @relation(fields: [auctioneerId], references: [id])
+}
+
+// ─── DOCUMENT / EVIDENCE TRACKING ──────────────────────────────────────────────
+
+model DocumentReference {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  docType     String              // KENYA_GAZETTE, BANK_NOTICE, KRA_NOTICE, NTSA_COR, COURT_ORDER
+  sourceUrl   String?
+  sourceName  String
+  publishedDate DateTime?
+  ocrText     String?             // extracted text via Tesseract/LLM
+  confidence  Float    @default(1.0)
+  createdAt   DateTime @default(now())
+
+  vehicle     Vehicle @relation(fields: [vehicleId], references: [id])
+}
+
+// ─── FRAUD FLAGS & RISK SCORING ────────────────────────────────────────────────
+
+model FraudFlag {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  flagType    String              // LOAN_STACKING_SUSPECT, ACTIVE_AUCTION_LISTING, GOVERNMENT_PLATE_HISTORY, 
+                                 // MULTIPLE_STORAGE_YARD_APPEARANCES, RAPID_RE_PLEDGE, CHASSIS_MISMATCH
+  severity    String   @default("HIGH")  // LOW, MEDIUM, HIGH, CRITICAL
+  description String
+  evidenceIds String?             // JSON array of document/loan/auction IDs
+  isResolved  Boolean  @default(false)
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  vehicle     Vehicle @relation(fields: [vehicleId], references: [id])
+}
+
+model RiskCheck {
+  id                String   @id @default(cuid())
+  requestId         String   @unique  // e.g. "req_8a7b6c5d4e"
+  vehicleId         String?
+  queryPlate        String
+  queryChassis      String?
+  requestorMfiId    String              // e.g. "MFI-2847"
+  borrowerIdHash    String?
+  loanAmountKes     Int?
+  riskScore         Int                 @default(0)   // 0-100
+  riskLevel         String  @default("LOW")  // LOW, MEDIUM, HIGH, CRITICAL
+  confidence        Float   @default(0)
+  flaggedIssues     String?             // JSON array of flag types
+  graphAnalysis     String?             // JSON: connectedLoans, lenders, auctions, fraudRingSize, shortestPath
+  historicalFootprints String?          // JSON array of footprint objects
+  recommendation    String?             // APPROVE_LOAN, REVIEW_MANUALLY, REJECT_LOAN
+  responseTimeMs    Int?
+  createdAt         DateTime @default(now())
+
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
+}
+
+// ─── SCRAPING SOURCE MONITORING ────────────────────────────────────────────────
+
+model ScrapingSource {
+  id            String   @id @default(cuid())
+  name          String              // e.g. "Family Bank Vehicles"
+  url           String
+  category      String              // BANK_PORTAL, GOVERNMENT, AUCTIONEER, FINTECH_DEV
+  complexity    String              // LOW, MEDIUM, HIGH
+  lastScrapedAt DateTime?
+  lastStatus    String?             // SUCCESS, PARTIAL, FAILED, TIMEOUT
+  recordsFound  Int      @default(0)
+  scrapeIntervalHours Int  @default(6)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── DASHBOARD ANALYTICS ───────────────────────────────────────────────────────
+
+model DashboardStats {
+  id                  String   @id @default(cuid())
+  totalVehicles       Int      @default(0)
+  totalLoanApps       Int      @default(0)
+  totalAuctions       Int      @default(0)
+  totalFraudFlags     Int      @default(0)
+  loanStackingDetections Int  @default(0)
+  avgRiskScore        Float    @default(0)
+  sourcesActive       Int      @default(0)
+  riskChecksToday     Int      @default(0)
+  updatedAt           DateTime @updatedAt
+}
