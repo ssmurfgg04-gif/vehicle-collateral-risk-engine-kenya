@@ -52,3 +52,19 @@ prompt
 server.log
 # Skills directory
 /skills/
+# Virtual environment
+.venv/
+
+# Large binary files
+*.so
+*.db-wal
+*.db-shm
+catboost_info/
+
+# Build artifacts
+bin/
+node_modules/
+
+# Data files (regenerated)
+data/ingestion_queue.db
+data/proxies/
