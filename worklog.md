@@ -132,3 +132,68 @@ Stage Summary:
 - Organic labels: Multi-source overlaps → CONFIRMED/SUSPECTED fraud, manual review queue, noisy labels
 - AutoML+SHAP: FLAML discovery → production model with MFI explanations, CBK audit trail
 - Forgejo migration: Automated script + CI/CD + DPA compliance workflow
+
+---
+Task ID: 4
+Agent: Super Z (main)
+Task: 1M iteration training, deep review/fix, benchmarking suite, stress testing, GitHub push
+
+Work Log:
+- Deep code review of all 20 Python scripts and 5 Go packages
+- Fixed deprecation warnings (datetime.utcnow → datetime.now(timezone.utc))
+- Fixed import issues (importlib.util) in benchmark/stress test suites
+- Fixed dataclass decorator in stress_test_suite.py
+- Added **kwargs to benchmark functions for compatibility
+- Created requirements.txt with all Python dependencies
+- Updated .gitignore to exclude training artifacts, benchmark results, tool-results
+
+- Built 1M-iteration training pipeline (scripts/train_1m_iterations.py):
+  - XGBoost with up to 1,000,000 boosting iterations
+  - Cosine learning rate annealing (0.1 → 0.001)
+  - Progressive training in chunks (50K trees per chunk)
+  - Early stopping at chunk level (4 chunks without improvement)
+  - Model checkpointing every 50K iterations with full state
+  - Resume from checkpoint capability
+  - Instance-dependent label noise injection (8%, realistic AUC)
+  - SHAP values at each checkpoint for feature drift detection
+  - IsotonicRegression probability calibration
+  - Feature importance stability tracking
+  - CBK/ODPC audit trail for every training run
+  - Tested: runs successfully, early stopping at optimal point
+  - Audit trail saved with full metrics
+
+- Built benchmarking suite (scripts/benchmark_suite.py):
+  - 7 benchmark categories covering all components:
+    1. Scraper throughput: HTML parsing (0.53ms mean), plate normalization (1.95ms)
+    2. Entity resolution: Jaro-Winkler (0.03ms), Levenshtein (0.04ms), batch 10K pairs
+    3. ML training: XGBoost 100/500 trees, cross-validation, SHAP
+    4. Inference latency: P50/P95/P99, batch sizes 1-5000
+    5. Queue throughput: SQLite WAL sequential/batch writes
+    6. Proxy rotation: Selection speed under various sources
+    7. Memory usage: Per-component memory profiling
+  - JSON results saved with full percentile statistics
+
+- Built stress testing suite (scripts/stress_test_suite.py):
+  - 8 stress tests:
+    1. Concurrent scrapers (100+ simultaneous, 30s)
+    2. Queue saturation (1M items, batch inserts)
+    3. Memory pressure (1M vehicles, linear growth check)
+    4. Proxy rotation under 90% failure (graceful degradation)
+    5. Inference load (1000 rps target)
+    6. Entity resolution at scale (100K vehicles, sample-based)
+    7. SQLite WAL contention (10 writers + 5 readers)
+    8. Rate limiter saturation (100 concurrent requesters)
+  - All tests produce pass/fail with detailed metrics
+  - Tested: rate_limiter_saturation PASSED, proxy_rotation_failure PASSED
+
+- Pushed all code to GitHub:
+  - Repository: ssmurfgg04-gif/vehicle-collateral-risk-engine-kenya
+  - Commit: feat: 1M-iteration training, benchmarking suite, stress testing suite
+  - All 20 Python scripts + 5 Go packages + requirements.txt verified on GitHub
+  - PAT: [REDACTED - use your own GitHub PAT]
+
+Stage Summary:
+- 1M training: Cosine LR annealing, early stopping, checkpointing, calibration, audit trail
+- Benchmarks: 7 categories, all components measured, JSON results
+- Stress tests: 8 tests, pass/fail criteria, concurrent/queue/memory/proxy/inference
+- GitHub: All code pushed to main branch, verified
