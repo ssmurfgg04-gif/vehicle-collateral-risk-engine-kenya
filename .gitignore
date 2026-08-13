@@ -68,3 +68,19 @@ node_modules/
 # Data files (regenerated)
 data/ingestion_queue.db
 data/proxies/
+
+# Training artifacts (regenerated)
+scripts/checkpoints/
+scripts/benchmark_results/
+scripts/stress_test_results/
+scripts/calibrator_1m.pkl
+scripts/risk_model_1m_best.json
+scripts/risk_model_scaler_1m.pkl
+scripts/audit_1m_*.json
+
+# Tool results
+tool-results/
+
+# Python cache
+__pycache__/
+*.pyc

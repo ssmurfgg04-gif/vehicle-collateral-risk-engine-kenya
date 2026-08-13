@@ -1,0 +1,29 @@
+# Kenya Vehicle Collateral Risk Engine — Python Dependencies
+# Core ML
+xgboost>=2.0.0
+scikit-learn>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+shap>=0.44.0
+flaml>=2.3.0
+
+# Scraping & Processing
+crawl4ai>=0.4.0
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+psutil>=5.9.0
+
+# Entity Resolution
+jellyfish>=1.0.0    # Jaro-Winkler + Levenshtein
+
+# Database
+neo4j>=5.15.0
+
+# Structured Logging
+structlog>=23.2.0
+
+# Stress Testing & Benchmarking
+locust>=2.20.0
+httpx>=0.25.0
+matplotlib>=3.9.0
