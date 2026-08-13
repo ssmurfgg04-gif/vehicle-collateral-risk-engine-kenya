@@ -543,6 +543,219 @@ func (s *KRADisposalsScraper) Scrape() *models.ScrapingResult {
         return result
 }
 
+// GaramAuctioneersScraper scrapes Garam Auctioneers vehicle listings.
+type GaramAuctioneersScraper struct {
+        c        *colly.Collector
+        queue    *queue.SQLiteQueue
+        vehicles []models.ScrapedVehicle
+        errors   []string
+        log      *zap.Logger
+}
+
+var garamURLs = []string{
+        "https://garamauctioneers.co.ke",
+        "https://garamauctioneers.co.ke/vehicle-auctions",
+        "https://garamauctioneers.co.ke/auctions",
+}
+
+func NewGaramAuctioneersScraper(q *queue.SQLiteQueue) *GaramAuctioneersScraper {
+        c := colly.NewCollector(
+                colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
+                colly.Async(true),
+                colly.MaxDepth(2),
+        )
+        c.Limit(&colly.LimitRule{
+                DomainGlob:  "garamauctioneers.co.ke",
+                Delay:       3 * time.Second,
+                RandomDelay: 1 * time.Second,
+        })
+        c.OnError(func(r *colly.Response, err error) {
+                if r.StatusCode == 429 || r.StatusCode == 503 {
+                        delay := ratelimit.FullJitterBackoff(1, 4*time.Second, 60*time.Second)
+                        time.Sleep(delay)
+                        r.Request.Retry()
+                }
+        })
+        return &GaramAuctioneersScraper{c: c, queue: q, log: zap.L().Named("garam_auctioneers")}
+}
+
+func (s *GaramAuctioneersScraper) Scrape() *models.ScrapingResult {
+        start := time.Now()
+        s.vehicles = nil
+        s.errors = nil
+        s.c.OnResponse(func(r *colly.Response) {
+                url := r.Request.URL.String()
+                parsedVehicles := parser.ParseVehicleFromHTML(string(r.Body), url, "garam_auctioneers")
+                for _, v := range parsedVehicles {
+                        normalized, countyCode, plateCategory := parser.NormalizePlate(fmt.Sprintf("%v", v["raw_plate"]))
+                        sv := models.ScrapedVehicle{
+                                Source: "garam_auctioneers", ScrapedAt: time.Now().UTC().Format(time.RFC3339),
+                                RawPlate: fmt.Sprintf("%v", v["raw_plate"]), NormalizedPlate: normalized,
+                                CountyCode: countyCode, PlateCategory: plateCategory,
+                                Make: fmt.Sprintf("%v", v["make"]), Model: fmt.Sprintf("%v", v["model"]),
+                                ListingType: "AUCTION_LISTING", ListingURL: url, Confidence: 0.80,
+                        }
+                        s.vehicles = append(s.vehicles, sv)
+                }
+        })
+        s.c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+                link := e.Attr("href")
+                if parser.ContainsPaginationLink(link) || parser.ContainsNoticeLink(link) {
+                        e.Request.Visit(link)
+                }
+        })
+        for _, url := range garamURLs {
+                if err := s.c.Visit(url); err != nil {
+                        s.errors = append(s.errors, fmt.Sprintf("%s: %v", url, err))
+                }
+        }
+        s.c.Wait()
+        duration := time.Since(start)
+        status := "SUCCESS"
+        if len(s.errors) > 0 { status = "PARTIAL" }
+        if len(s.vehicles) == 0 { status = "NO_VEHICLES" }
+        result := &models.ScrapingResult{
+                SourceID: "garam_auctioneers", SourceName: "Garam Auctioneers", Status: status,
+                Vehicles: s.vehicles, URLsScraped: len(garamURLs) - len(s.errors),
+                URLsFailed: len(s.errors), DurationMs: duration.Milliseconds(), Errors: s.errors,
+        }
+        if s.queue != nil && len(s.vehicles) > 0 {
+                batch := make([]map[string]interface{}, len(s.vehicles))
+                for i, v := range s.vehicles { batch[i] = vehicleToMap(v) }
+                count, err := s.queue.EnqueueBatch(batch, "garam_auctioneers")
+                if err != nil { s.log.Error("queue failed", zap.Error(err)) } else { s.log.Info("vehicles queued", zap.Int("count", count)) }
+        }
+        return result
+}
+
+// KeysianAuctioneersScraper scrapes Keysian Auctioneers vehicle listings.
+type KeysianAuctioneersScraper struct {
+        c        *colly.Collector
+        queue    *queue.SQLiteQueue
+        vehicles []models.ScrapedVehicle
+        errors   []string
+        log      *zap.Logger
+}
+
+var keysianURLs = []string{
+        "https://keysianauctioneers.co.ke",
+        "https://keysianauctioneers.co.ke/vehicle-auctions",
+}
+
+func NewKeysianAuctioneersScraper(q *queue.SQLiteQueue) *KeysianAuctioneersScraper {
+        c := colly.NewCollector(
+                colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
+                colly.Async(true), colly.MaxDepth(2),
+        )
+        c.Limit(&colly.LimitRule{DomainGlob: "keysianauctioneers.co.ke", Delay: 3 * time.Second, RandomDelay: 1 * time.Second})
+        c.OnError(func(r *colly.Response, err error) {
+                if r.StatusCode == 429 || r.StatusCode == 503 { time.Sleep(ratelimit.FullJitterBackoff(1, 4*time.Second, 60*time.Second)); r.Request.Retry() }
+        })
+        return &KeysianAuctioneersScraper{c: c, queue: q, log: zap.L().Named("keysian_auctioneers")}
+}
+
+func (s *KeysianAuctioneersScraper) Scrape() *models.ScrapingResult {
+        start := time.Now()
+        s.vehicles = nil; s.errors = nil
+        s.c.OnResponse(func(r *colly.Response) {
+                url := r.Request.URL.String()
+                parsedVehicles := parser.ParseVehicleFromHTML(string(r.Body), url, "keysian_auctioneers")
+                for _, v := range parsedVehicles {
+                        normalized, countyCode, plateCategory := parser.NormalizePlate(fmt.Sprintf("%v", v["raw_plate"]))
+                        sv := models.ScrapedVehicle{
+                                Source: "keysian_auctioneers", ScrapedAt: time.Now().UTC().Format(time.RFC3339),
+                                RawPlate: fmt.Sprintf("%v", v["raw_plate"]), NormalizedPlate: normalized,
+                                CountyCode: countyCode, PlateCategory: plateCategory,
+                                Make: fmt.Sprintf("%v", v["make"]), Model: fmt.Sprintf("%v", v["model"]),
+                                ListingType: "AUCTION_LISTING", ListingURL: url, Confidence: 0.80,
+                        }
+                        s.vehicles = append(s.vehicles, sv)
+                }
+        })
+        for _, url := range keysianURLs {
+                if err := s.c.Visit(url); err != nil { s.errors = append(s.errors, fmt.Sprintf("%s: %v", url, err)) }
+        }
+        s.c.Wait()
+        duration := time.Since(start)
+        status := "SUCCESS"; if len(s.errors) > 0 { status = "PARTIAL" }; if len(s.vehicles) == 0 { status = "NO_VEHICLES" }
+        result := &models.ScrapingResult{
+                SourceID: "keysian_auctioneers", SourceName: "Keysian Auctioneers", Status: status,
+                Vehicles: s.vehicles, URLsScraped: len(keysianURLs) - len(s.errors),
+                URLsFailed: len(s.errors), DurationMs: duration.Milliseconds(), Errors: s.errors,
+        }
+        if s.queue != nil && len(s.vehicles) > 0 {
+                batch := make([]map[string]interface{}, len(s.vehicles))
+                for i, v := range s.vehicles { batch[i] = vehicleToMap(v) }
+                count, err := s.queue.EnqueueBatch(batch, "keysian_auctioneers")
+                if err != nil { s.log.Error("queue failed", zap.Error(err)) } else { s.log.Info("vehicles queued", zap.Int("count", count)) }
+        }
+        return result
+}
+
+// GreatWarfareScraper scrapes GreatWarfare vehicle auction listings.
+type GreatWarfareScraper struct {
+        c        *colly.Collector
+        queue    *queue.SQLiteQueue
+        vehicles []models.ScrapedVehicle
+        errors   []string
+        log      *zap.Logger
+}
+
+var greatwarfareURLs = []string{
+        "https://greatwarfare.co.ke",
+        "https://greatwarfare.co.ke/auctions",
+}
+
+func NewGreatWarfareScraper(q *queue.SQLiteQueue) *GreatWarfareScraper {
+        c := colly.NewCollector(
+                colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
+                colly.Async(true), colly.MaxDepth(2),
+        )
+        c.Limit(&colly.LimitRule{DomainGlob: "greatwarfare.co.ke", Delay: 3 * time.Second, RandomDelay: 1 * time.Second})
+        c.OnError(func(r *colly.Response, err error) {
+                if r.StatusCode == 429 || r.StatusCode == 503 { time.Sleep(ratelimit.FullJitterBackoff(1, 4*time.Second, 60*time.Second)); r.Request.Retry() }
+        })
+        return &GreatWarfareScraper{c: c, queue: q, log: zap.L().Named("greatwarfare")}
+}
+
+func (s *GreatWarfareScraper) Scrape() *models.ScrapingResult {
+        start := time.Now()
+        s.vehicles = nil; s.errors = nil
+        s.c.OnResponse(func(r *colly.Response) {
+                url := r.Request.URL.String()
+                parsedVehicles := parser.ParseVehicleFromHTML(string(r.Body), url, "greatwarfare")
+                for _, v := range parsedVehicles {
+                        normalized, countyCode, plateCategory := parser.NormalizePlate(fmt.Sprintf("%v", v["raw_plate"]))
+                        sv := models.ScrapedVehicle{
+                                Source: "greatwarfare", ScrapedAt: time.Now().UTC().Format(time.RFC3339),
+                                RawPlate: fmt.Sprintf("%v", v["raw_plate"]), NormalizedPlate: normalized,
+                                CountyCode: countyCode, PlateCategory: plateCategory,
+                                Make: fmt.Sprintf("%v", v["make"]), Model: fmt.Sprintf("%v", v["model"]),
+                                ListingType: "AUCTION_LISTING", ListingURL: url, Confidence: 0.75,
+                        }
+                        s.vehicles = append(s.vehicles, sv)
+                }
+        })
+        for _, url := range greatwarfareURLs {
+                if err := s.c.Visit(url); err != nil { s.errors = append(s.errors, fmt.Sprintf("%s: %v", url, err)) }
+        }
+        s.c.Wait()
+        duration := time.Since(start)
+        status := "SUCCESS"; if len(s.errors) > 0 { status = "PARTIAL" }; if len(s.vehicles) == 0 { status = "NO_VEHICLES" }
+        result := &models.ScrapingResult{
+                SourceID: "greatwarfare", SourceName: "GreatWarfare Auctions", Status: status,
+                Vehicles: s.vehicles, URLsScraped: len(greatwarfareURLs) - len(s.errors),
+                URLsFailed: len(s.errors), DurationMs: duration.Milliseconds(), Errors: s.errors,
+        }
+        if s.queue != nil && len(s.vehicles) > 0 {
+                batch := make([]map[string]interface{}, len(s.vehicles))
+                for i, v := range s.vehicles { batch[i] = vehicleToMap(v) }
+                count, err := s.queue.EnqueueBatch(batch, "greatwarfare")
+                if err != nil { s.log.Error("queue failed", zap.Error(err)) } else { s.log.Info("vehicles queued", zap.Int("count", count)) }
+        }
+        return result
+}
+
 // vehicleToMap converts a ScrapedVehicle to a map for JSON serialization.
 func vehicleToMap(v models.ScrapedVehicle) map[string]interface{} {
         m := map[string]interface{}{

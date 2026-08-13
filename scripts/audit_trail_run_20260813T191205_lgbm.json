@@ -1,0 +1,531 @@
+{
+  "run_id": "run_20260813T191205_lgbm",
+  "timestamp": "2026-08-13T19:12:05.776249+00:00",
+  "schema_version": "1.0",
+  "regulatory_framework": "CBK/ODPC Automated Credit Decision Audit",
+  "model": {
+    "type": "LGBMClassifier",
+    "winner_estimator": "lgbm",
+    "hyperparameters": {
+      "n_estimators": 14,
+      "num_leaves": 4,
+      "min_child_samples": 15,
+      "learning_rate": 0.0009950499056428747,
+      "log_max_bin": 10,
+      "colsample_bytree": 0.7650828432472845,
+      "reg_alpha": 3.3555572975629535,
+      "reg_lambda": 0.42013717831360275
+    },
+    "n_features": 47,
+    "feature_names": [
+      "degree_centrality",
+      "clustering_coefficient",
+      "page_rank",
+      "wcc_component_size",
+      "betweenness_centrality",
+      "closeness_centrality",
+      "eigen_vector_centrality",
+      "harmonic_centrality",
+      "articulation_point_flag",
+      "triangle_count",
+      "avg_neighbor_degree",
+      "max_neighbor_degree",
+      "community_density",
+      "lender_diversity",
+      "unique_lender_count",
+      "sacco_lender_flag",
+      "dcp_lender_flag",
+      "unregulated_lender_count",
+      "lender_type_entropy",
+      "cross_institution_flag",
+      "same_branch_repledge_flag",
+      "temporal_velocity",
+      "days_since_last_loan",
+      "avg_days_between_loans",
+      "min_days_between_loans",
+      "max_days_between_loans",
+      "loan_count_30d",
+      "loan_count_90d",
+      "seasonal_pattern_flag",
+      "govt_plate_flag",
+      "govt_plate_no_disposal_doc",
+      "vehicle_age_years",
+      "county_risk_score",
+      "chassis_mismatch_flag",
+      "plate_chassis_conflict",
+      "active_auction_flag",
+      "auction_count_12m",
+      "storage_yard_count",
+      "yard_mobility_count",
+      "avg_yard_stay_days",
+      "yard_county_mismatch_flag",
+      "distress_sale_flag",
+      "caveat_coverage_gap",
+      "caveat_not_registered_flag",
+      "caveat_registration_lag_days",
+      "cross_lender_caveat_conflict",
+      "total_exposure_kes_normalized"
+    ],
+    "feature_groups": {
+      "graph_topology": [
+        "degree_centrality",
+        "clustering_coefficient",
+        "page_rank",
+        "wcc_component_size",
+        "betweenness_centrality",
+        "closeness_centrality",
+        "eigen_vector_centrality",
+        "harmonic_centrality",
+        "articulation_point_flag",
+        "triangle_count",
+        "avg_neighbor_degree",
+        "max_neighbor_degree",
+        "community_density"
+      ],
+      "lender_diversity": [
+        "lender_diversity",
+        "unique_lender_count",
+        "sacco_lender_flag",
+        "dcp_lender_flag",
+        "unregulated_lender_count",
+        "lender_type_entropy",
+        "cross_institution_flag",
+        "same_branch_repledge_flag"
+      ],
+      "temporal_patterns": [
+        "temporal_velocity",
+        "days_since_last_loan",
+        "avg_days_between_loans",
+        "min_days_between_loans",
+        "max_days_between_loans",
+        "loan_count_30d",
+        "loan_count_90d",
+        "seasonal_pattern_flag"
+      ],
+      "vehicle_provenance": [
+        "govt_plate_flag",
+        "govt_plate_no_disposal_doc",
+        "vehicle_age_years",
+        "county_risk_score",
+        "chassis_mismatch_flag",
+        "plate_chassis_conflict"
+      ],
+      "auction_yard_signals": [
+        "active_auction_flag",
+        "auction_count_12m",
+        "storage_yard_count",
+        "yard_mobility_count",
+        "avg_yard_stay_days",
+        "yard_county_mismatch_flag",
+        "distress_sale_flag"
+      ],
+      "caveat_coverage": [
+        "caveat_coverage_gap",
+        "caveat_not_registered_flag",
+        "caveat_registration_lag_days",
+        "cross_lender_caveat_conflict",
+        "total_exposure_kes_normalized"
+      ]
+    }
+  },
+  "data": {
+    "n_train": 4250,
+    "n_val": 750,
+    "fraud_rate_train": 0.12494117647058824,
+    "fraud_rate_val": 0.12533333333333332,
+    "feature_statistics": {
+      "degree_centrality": {
+        "mean": 1.1345902426064078,
+        "std": 1.3551367220677113,
+        "min": 8.030914405266738e-05,
+        "max": 23.206793308947
+      },
+      "clustering_coefficient": {
+        "mean": 0.17935554979107818,
+        "std": 0.15973584431896637,
+        "min": 1.8202376468702044e-05,
+        "max": 0.9921454706764303
+      },
+      "page_rank": {
+        "mean": 0.0014180743782711053,
+        "std": 0.00289428346455208,
+        "min": 3.2054951313887136e-08,
+        "max": 0.05644265998548774
+      },
+      "wcc_component_size": {
+        "mean": 1.1209411764705883,
+        "std": 0.7006429208522627,
+        "min": 1.0,
+        "max": 7.0
+      },
+      "betweenness_centrality": {
+        "mean": 0.5825260965833539,
+        "std": 0.728902020611199,
+        "min": 6.291995258628024e-05,
+        "max": 8.494710624914331
+      },
+      "closeness_centrality": {
+        "mean": 0.3071136892907545,
+        "std": 0.3164515501408758,
+        "min": 7.412931909166538e-05,
+        "max": 3.7590209272035318
+      },
+      "eigen_vector_centrality": {
+        "mean": 0.001144283974375207,
+        "std": 0.0016099653827705597,
+        "min": 7.349124117855471e-08,
+        "max": 0.027716874791141075
+      },
+      "harmonic_centrality": {
+        "mean": 0.21870991316360838,
+        "std": 0.24628021779647086,
+        "min": 3.7318068504463736e-05,
+        "max": 3.162795253595741
+      },
+      "articulation_point_flag": {
+        "mean": 0.010588235294117647,
+        "std": 0.10236498482435324,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "triangle_count": {
+        "mean": 1.228705882352941,
+        "std": 1.3415967452501654,
+        "min": 0.0,
+        "max": 9.0
+      },
+      "avg_neighbor_degree": {
+        "mean": 1.0652097513607728,
+        "std": 1.1416199295539595,
+        "min": 7.185053057082648e-05,
+        "max": 12.23610388078411
+      },
+      "max_neighbor_degree": {
+        "mean": 1.6092428495889275,
+        "std": 1.3672914769097866,
+        "min": 0.0078056530845746165,
+        "max": 13.022304893324176
+      },
+      "community_density": {
+        "mean": 0.1881598495961962,
+        "std": 0.17398663007084744,
+        "min": 0.00019402995250697276,
+        "max": 0.9638918881663588
+      },
+      "lender_diversity": {
+        "mean": 1.2418823529411764,
+        "std": 0.5610200131969034,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "unique_lender_count": {
+        "mean": 1.2418823529411764,
+        "std": 0.5610200131969034,
+        "min": 1.0,
+        "max": 4.0
+      },
+      "sacco_lender_flag": {
+        "mean": 0.31976470588235295,
+        "std": 0.46644016857009973,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "dcp_lender_flag": {
+        "mean": 0.10705882352941176,
+        "std": 0.30922440167950815,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "unregulated_lender_count": {
+        "mean": 0.04776470588235294,
+        "std": 0.27839086622114506,
+        "min": 0.0,
+        "max": 2.0
+      },
+      "lender_type_entropy": {
+        "mean": 0.35805873587504167,
+        "std": 0.44365619524381106,
+        "min": 0.0001016206610055217,
+        "max": 5.732268419040448
+      },
+      "cross_institution_flag": {
+        "mean": 0.03247058823529412,
+        "std": 0.1772671513092184,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "same_branch_repledge_flag": {
+        "mean": 0.1484705882352941,
+        "std": 0.35560768722278646,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "temporal_velocity": {
+        "mean": 0.03413830088480107,
+        "std": 0.09831395115304448,
+        "min": 3.2917313836018523e-06,
+        "max": 1.7458503611731155
+      },
+      "days_since_last_loan": {
+        "mean": 172.50100213002716,
+        "std": 181.82508060905985,
+        "min": 0.014651802557247889,
+        "max": 1843.0435884679675
+      },
+      "avg_days_between_loans": {
+        "mean": 386.207619354396,
+        "std": 424.5133157439273,
+        "min": 0.037021770560398196,
+        "max": 4355.637251359834
+      },
+      "min_days_between_loans": {
+        "mean": 213.93033030616974,
+        "std": 249.01959515937673,
+        "min": 0.018125380537507375,
+        "max": 2698.251024948462
+      },
+      "max_days_between_loans": {
+        "mean": 1065.6146572683144,
+        "std": 1211.1557148931306,
+        "min": 0.07371997904809108,
+        "max": 12325.649040817476
+      },
+      "loan_count_30d": {
+        "mean": 0.12047058823529412,
+        "std": 0.5874499540680919,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "loan_count_90d": {
+        "mean": 0.6663529411764706,
+        "std": 0.866859092325198,
+        "min": 0.0,
+        "max": 6.0
+      },
+      "seasonal_pattern_flag": {
+        "mean": 0.019058823529411763,
+        "std": 0.13674788763086373,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "govt_plate_flag": {
+        "mean": 0.014352941176470587,
+        "std": 0.11895488106788288,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "govt_plate_no_disposal_doc": {
+        "mean": 0.006588235294117647,
+        "std": 0.08090964573128265,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "vehicle_age_years": {
+        "mean": 8.22207015701184,
+        "std": 4.1355243614900425,
+        "min": 1.001559725488842,
+        "max": 19.94338665802749
+      },
+      "county_risk_score": {
+        "mean": 0.4175268660542928,
+        "std": 0.13829743189261515,
+        "min": 0.20001603090322786,
+        "max": 0.9993944341969285
+      },
+      "chassis_mismatch_flag": {
+        "mean": 0.012,
+        "std": 0.10889807300223842,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "plate_chassis_conflict": {
+        "mean": 0.006823529411764706,
+        "std": 0.0823320339498733,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "active_auction_flag": {
+        "mean": 0.023529411764705882,
+        "std": 0.15159546788927428,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "auction_count_12m": {
+        "mean": 0.058823529411764705,
+        "std": 0.41937488295838193,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "storage_yard_count": {
+        "mean": 0.3891764705882353,
+        "std": 0.6036490039295828,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "yard_mobility_count": {
+        "mean": 0.09929411764705882,
+        "std": 0.4748556115419542,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "avg_yard_stay_days": {
+        "mean": 1.2974844515625903,
+        "std": 7.761690755369625,
+        "min": 0.0,
+        "max": 138.2682736039737
+      },
+      "yard_county_mismatch_flag": {
+        "mean": 0.013647058823529411,
+        "std": 0.11603441129843456,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "distress_sale_flag": {
+        "mean": 0.019294117647058823,
+        "std": 0.13757291855667916,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "caveat_coverage_gap": {
+        "mean": 0.02988235294117647,
+        "std": 0.17028276649152768,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "caveat_not_registered_flag": {
+        "mean": 0.01647058823529412,
+        "std": 0.1272914783377452,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "caveat_registration_lag_days": {
+        "mean": 0.2749722486426545,
+        "std": 2.965329114398108,
+        "min": 0.0,
+        "max": 76.8840113067432
+      },
+      "cross_lender_caveat_conflict": {
+        "mean": 0.023294117647058823,
+        "std": 0.15085375793968045,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "total_exposure_kes_normalized": {
+        "mean": 0.3101610324939524,
+        "std": 0.18469442313078194,
+        "min": 0.005081318016057339,
+        "max": 0.9785231475004064
+      }
+    }
+  },
+  "flaml_discovery": {
+    "best_estimator": "lgbm",
+    "best_auc": 0.7732567023644773,
+    "val_auc": 0.7696224701608718,
+    "discovery_time_s": 179.989054269,
+    "all_results": {
+      "xgboost": {
+        "config": {
+          "n_estimators": 69,
+          "max_leaves": 4,
+          "min_child_weight": 3.213555687729511,
+          "learning_rate": 0.0014397111127100125,
+          "subsample": 1.0,
+          "colsample_bylevel": 0.7369058112699375,
+          "colsample_bytree": 0.6850875775571568,
+          "reg_alpha": 0.0011127707077841257,
+          "reg_lambda": 0.22685393600912732
+        },
+        "loss": 0.22840023187352063
+      },
+      "lgbm": {
+        "config": {
+          "n_estimators": 14,
+          "num_leaves": 4,
+          "min_child_samples": 15,
+          "learning_rate": 0.0009950499056428747,
+          "log_max_bin": 10,
+          "colsample_bytree": 0.7650828432472845,
+          "reg_alpha": 3.3555572975629535,
+          "reg_lambda": 0.42013717831360275
+        },
+        "loss": 0.22674329763552273
+      },
+      "catboost": {
+        "config": {
+          "early_stopping_rounds": 12,
+          "learning_rate": 0.0846275374319619,
+          "n_estimators": 8192
+        },
+        "loss": 0.2346367728908673
+      },
+      "rf": {
+        "config": {
+          "n_estimators": 21,
+          "max_features": 0.20129096536183325,
+          "max_leaves": 4,
+          "criterion": "entropy"
+        },
+        "loss": 0.230985954762426
+      }
+    }
+  },
+  "performance": {
+    "val_auc": 0.7696224701608718,
+    "val_precision": 0.0,
+    "val_recall": 0.0,
+    "val_f1": 0.0,
+    "classification_report": {
+      "legitimate": {
+        "precision": 0.8746666666666667,
+        "recall": 1.0,
+        "f1-score": 0.9331436699857752,
+        "support": 656.0
+      },
+      "fraud": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 94.0
+      },
+      "accuracy": 0.8746666666666667,
+      "macro avg": {
+        "precision": 0.43733333333333335,
+        "recall": 0.5,
+        "f1-score": 0.4665718349928876,
+        "support": 750.0
+      },
+      "weighted avg": {
+        "precision": 0.7650417777777778,
+        "recall": 0.8746666666666667,
+        "f1-score": 0.816189663347558,
+        "support": 750.0
+      }
+    }
+  },
+  "explainability": {
+    "method": "TreeExplainer (exact Shapley values)",
+    "base_value": -1.9464968896497998,
+    "mean_abs_shap_top10": {
+      "loan_count_30d": 0.010288407648996068,
+      "max_days_between_loans": 0.002827328328862264,
+      "avg_days_between_loans": 0.0017209460653728617,
+      "days_since_last_loan": 0.0005914447547598608,
+      "degree_centrality": 0.0,
+      "clustering_coefficient": 0.0,
+      "page_rank": 0.0,
+      "wcc_component_size": 0.0,
+      "betweenness_centrality": 0.0,
+      "closeness_centrality": 0.0
+    }
+  },
+  "calibration": {
+    "method": "IsotonicRegression",
+    "monotonic": true,
+    "bounds": "clipped to [0, 1]"
+  },
+  "integrity": {
+    "training_data_hash": "c19bd6bb928486de",
+    "labels_hash": "ba75409301d39974"
+  }
+}

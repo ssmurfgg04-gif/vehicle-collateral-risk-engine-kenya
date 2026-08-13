@@ -1,6 +1,267 @@
 Manual Review Queue — Kenya Vehicle Fraud Detection
-Generated: 2026-08-13T10:39:41.797369
+Generated: 2026-08-13T19:13:26.929281+00:00
 ============================================================
 
-Total cases for review: 0
+Total cases for review: 29
+
+Case 77:
+  Plate:     KAG473Y
+  Chassis:   WBA4ENRYDR5D3GDY1...
+  Make/Model: Toyota Fielder
+  Source:    equity_bank
+  Evidence:  ["plate_in_2_sources:equity_bank,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 82:
+  Plate:     KAB114U
+  Chassis:   ...
+  Make/Model: Kia Picanto
+  Source:    equity_bank
+  Evidence:  ["plate_in_2_sources:coop_bank,equity_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 182:
+  Plate:     KAP591B
+  Chassis:   ...
+  Make/Model: Mitsubishi L200
+  Source:    family_bank
+  Evidence:  ["plate_in_2_sources:family_bank,kcb_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 472:
+  Plate:     KAQ232B
+  Chassis:   ...
+  Make/Model: Suzuki Swift
+  Source:    ncba_bank
+  Evidence:  ["plate_in_2_sources:cort_auctions,ncba_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 473:
+  Plate:     KAB337D
+  Chassis:   JTN7V47442NS2SR13...
+  Make/Model: Suzuki Alto
+  Source:    ncba_bank
+  Evidence:  ["plate_in_2_sources:kra_disposals,ncba_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 480:
+  Plate:     KAB337D
+  Chassis:   ...
+  Make/Model: Mercedes-Benz C-Class
+  Source:    ncba_bank
+  Evidence:  ["plate_in_2_sources:kra_disposals,ncba_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 553:
+  Plate:     KAP591B
+  Chassis:   JM1RKGRC32FDFD7W8...
+  Make/Model: Isuzu NQR
+  Source:    kcb_bank
+  Evidence:  ["plate_in_2_sources:family_bank,kcb_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 766:
+  Plate:     KAB114U
+  Chassis:   ...
+  Make/Model: Isuzu FSR
+  Source:    coop_bank
+  Evidence:  ["plate_in_2_sources:coop_bank,equity_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 802:
+  Plate:     KAF685V
+  Chassis:   JHMGKY39BJWKUEAA5...
+  Make/Model: BMW X3
+  Source:    coop_bank
+  Evidence:  ["plate_in_2_sources:coop_bank,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 846:
+  Plate:     EA
+  Chassis:   ...
+  Make/Model: Mercedes-Benz E-Class
+  Source:    kra_disposals
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 858:
+  Plate:     KAB337D
+  Chassis:   ...
+  Make/Model: Mercedes-Benz Sprinter
+  Source:    kra_disposals
+  Evidence:  ["plate_in_2_sources:kra_disposals,ncba_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 931:
+  Plate:     KAI675U
+  Chassis:   WVWTRV8UBZ8E1FZ8T...
+  Make/Model: Honda Fit
+  Source:    kra_disposals
+  Evidence:  ["plate_in_2_sources:cort_auctions,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 953:
+  Plate:     KAG473Y
+  Chassis:   ...
+  Make/Model: Mazda Demio
+  Source:    kra_disposals
+  Evidence:  ["plate_in_2_sources:equity_bank,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 976:
+  Plate:     KAG473Y
+  Chassis:   JTFKZBEJE0GNBB2C5...
+  Make/Model: Honda Accord
+  Source:    kra_disposals
+  Evidence:  ["plate_in_2_sources:equity_bank,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1126:
+  Plate:     KAG376S
+  Chassis:   ...
+  Make/Model: Isuzu NPR
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1201:
+  Plate:     KAF393D
+  Chassis:   ...
+  Make/Model: Subaru Outback
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:cort_auctions,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1204:
+  Plate:     KAG376S
+  Chassis:   ...
+  Make/Model: Toyota Fielder
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1208:
+  Plate:     KAF685V
+  Chassis:   MHYERN99HLCLP4YNX...
+  Make/Model: Mitsubishi L200
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:coop_bank,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1225:
+  Plate:     EA
+  Chassis:   ...
+  Make/Model: BMW 3 Series
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1233:
+  Plate:     KAQ648S
+  Chassis:   ...
+  Make/Model: BMW 3 Series
+  Source:    garam_auctioneers
+  Evidence:  ["plate_in_2_sources:auto24_kenya,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1290:
+  Plate:     KAG376S
+  Chassis:   JF1DZAN30RZFRX0T9...
+  Make/Model: Subaru XV
+  Source:    keysian_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1335:
+  Plate:     KAG376S
+  Chassis:   JF1HLU7M589G964RH...
+  Make/Model: Honda Fit
+  Source:    keysian_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1350:
+  Plate:     KAO526F
+  Chassis:   WVWKAYJDU5V7EZ4CP...
+  Make/Model: Suzuki Alto
+  Source:    keysian_auctioneers
+  Evidence:  ["plate_in_2_sources:cheki_kenya,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1397:
+  Plate:     KAG376S
+  Chassis:   MHYC1Y57KST508XT1...
+  Make/Model: BMW X3
+  Source:    keysian_auctioneers
+  Evidence:  ["plate_in_2_sources:garam_auctioneers,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1772:
+  Plate:     KAF393D
+  Chassis:   ...
+  Make/Model: Toyota Hilux
+  Source:    cort_auctions
+  Evidence:  ["plate_in_2_sources:cort_auctions,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1775:
+  Plate:     KAQ232B
+  Chassis:   ...
+  Make/Model: Isuzu NQR
+  Source:    cort_auctions
+  Evidence:  ["plate_in_2_sources:cort_auctions,ncba_bank"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1803:
+  Plate:     KAI675U
+  Chassis:   ...
+  Make/Model: Suzuki Jimny
+  Source:    cort_auctions
+  Evidence:  ["plate_in_2_sources:cort_auctions,kra_disposals"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1889:
+  Plate:     KAQ648S
+  Chassis:   ...
+  Make/Model: Range Rover Evoque
+  Source:    auto24_kenya
+  Evidence:  ["plate_in_2_sources:auto24_kenya,garam_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
+
+Case 1977:
+  Plate:     KAO526F
+  Chassis:   ...
+  Make/Model: Hyundai Accent
+  Source:    cheki_kenya
+  Evidence:  ["plate_in_2_sources:cheki_kenya,keysian_auctioneers"]
+  Confidence: 0.75
+  Action:    [ ] CONFIRMED  [ ] LEGITIMATE  [ ] NEEDS_MORE_INFO
 

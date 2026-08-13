@@ -19,7 +19,7 @@ import (
 
 func main() {
         // ─── CLI Flags ──────────────────────────────────────────────────────────────
-        sources := flag.String("sources", "family_bank,equity_bank,kenya_gazette,kra_disposals", "Comma-separated source IDs")
+        sources := flag.String("sources", "family_bank,equity_bank,kenya_gazette,kra_disposals,garam_auctioneers,keysian_auctioneers,greatwarfare", "Comma-separated source IDs")
         concurrency := flag.Int("concurrency", 1000, "Max concurrent scrapers (Go handles 10,000+)")
         queuePath := flag.String("queue", "", "SQLite queue path (default: shared with Python)")
         dryRun := flag.Bool("dry-run", false, "List sources without scraping")
@@ -92,6 +92,9 @@ func main() {
                 "gazettes.africa":      0.1,  // Government — very polite
                 "gazettes.africa.go.ke": 0.1,
                 "kra.go.ke":             0.1,  // KRA — government, very polite
+                "garamauctioneers.co.ke": 0.33,
+                "keysianauctioneers.co.ke": 0.33,
+                "greatwarfare.co.ke":      0.33,
         })
 
         // ─── Benchmark Mode ────────────────────────────────────────────────────────
@@ -128,6 +131,15 @@ func main() {
                                 result = s.Scrape()
                         case "kra_disposals":
                                 s := scraper.NewKRADisposalsScraper(q)
+                                result = s.Scrape()
+                        case "garam_auctioneers":
+                                s := scraper.NewGaramAuctioneersScraper(q)
+                                result = s.Scrape()
+                        case "keysian_auctioneers":
+                                s := scraper.NewKeysianAuctioneersScraper(q)
+                                result = s.Scrape()
+                        case "greatwarfare":
+                                s := scraper.NewGreatWarfareScraper(q)
                                 result = s.Scrape()
                         default:
                                 log.Warn("unknown source", zap.String("source", sourceID))
