@@ -19,7 +19,7 @@ import (
 
 func main() {
         // ─── CLI Flags ──────────────────────────────────────────────────────────────
-        sources := flag.String("sources", "family_bank,equity_bank,kenya_gazette", "Comma-separated source IDs")
+        sources := flag.String("sources", "family_bank,equity_bank,kenya_gazette,kra_disposals", "Comma-separated source IDs")
         concurrency := flag.Int("concurrency", 1000, "Max concurrent scrapers (Go handles 10,000+)")
         queuePath := flag.String("queue", "", "SQLite queue path (default: shared with Python)")
         dryRun := flag.Bool("dry-run", false, "List sources without scraping")
@@ -91,6 +91,7 @@ func main() {
                 "equitybank.co.ke":     0.33,
                 "gazettes.africa":      0.1,  // Government — very polite
                 "gazettes.africa.go.ke": 0.1,
+                "kra.go.ke":             0.1,  // KRA — government, very polite
         })
 
         // ─── Benchmark Mode ────────────────────────────────────────────────────────
@@ -124,6 +125,9 @@ func main() {
                                 result = s.Scrape()
                         case "kenya_gazette":
                                 s := scraper.NewKenyaGazetteScraper(q)
+                                result = s.Scrape()
+                        case "kra_disposals":
+                                s := scraper.NewKRADisposalsScraper(q)
                                 result = s.Scrape()
                         default:
                                 log.Warn("unknown source", zap.String("source", sourceID))
