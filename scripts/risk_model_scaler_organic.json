@@ -1,0 +1,51 @@
+{
+  "mean": [
+    0.9047619047619048,
+    1.0,
+    0.0,
+    0.8166666666666667,
+    1815476.1904761905,
+    0.0
+  ],
+  "scale": [
+    0.29354352395090366,
+    1.0,
+    1.0,
+    0.10274023338281628,
+    2129064.4070654856,
+    1.0
+  ],
+  "feature_names": [
+    "plate_source_count",
+    "chassis_plate_count",
+    "is_govt_plate",
+    "has_chassis",
+    "has_price",
+    "year",
+    "confidence",
+    "reserve_price_kes",
+    "fraud_confidence",
+    "make_",
+    "make_Mercedes",
+    "make_Nissan",
+    "make_Toyota",
+    "county_",
+    "county_KCL",
+    "county_KCX",
+    "county_KDH",
+    "county_KDJ",
+    "county_KDN",
+    "county_KDR",
+    "county_SKP",
+    "source_family_bank",
+    "source_unknown"
+  ],
+  "numeric_cols": [
+    "plate_source_count",
+    "chassis_plate_count",
+    "year",
+    "confidence",
+    "reserve_price_kes",
+    "fraud_confidence"
+  ]
+}

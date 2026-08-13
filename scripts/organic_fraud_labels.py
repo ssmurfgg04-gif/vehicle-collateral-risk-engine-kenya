@@ -556,9 +556,12 @@ def train_xgboost_organic(
 
         model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
         y_pred_proba = model.predict_proba(X_test)[:, 1]
-        auc = roc_auc_score(y_test, y_pred_proba)
-        aucs.append(auc)
-        logger.info("fold_complete", fold=fold, auc=f"{auc:.4f}")
+        try:
+            auc = roc_auc_score(y_test, y_pred_proba)
+            aucs.append(auc)
+            logger.info("fold_complete", fold=fold, auc=f"{auc:.4f}")
+        except ValueError:
+            logger.warning("fold_skipped_single_class", fold=fold)
 
     # Train final model on all data
     final_model = XGBClassifier(
@@ -599,8 +602,8 @@ def train_xgboost_organic(
         "total_records": len(df),
         "fraud_records": int(y.sum()),
         "fraud_rate": f"{y.mean():.1%}",
-        "cv_auc_mean": f"{np.mean(aucs):.4f}",
-        "cv_auc_std": f"{np.std(aucs):.4f}",
+        "cv_auc_mean": f"{np.mean(aucs):.4f}" if aucs else "N/A",
+        "cv_auc_std": f"{np.std(aucs):.4f}" if aucs else "N/A",
         "cv_folds": [f"{a:.4f}" for a in aucs],
         "feature_count": len(X.columns),
         "top_features": top_features,

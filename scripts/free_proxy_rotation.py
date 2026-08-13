@@ -120,9 +120,36 @@ def load_cache() -> List[Proxy]:
         logger.info("cache_loaded", count=len(proxies))
         return proxies
     except Exception as e:
-        logger.warning("cache_load_failed", error# Proxy rotation: round-robin with health tracking
+        logger.warning("cache_load_failed", error=str(e))
+        return []
+
+
+def save_cache(proxies: List[Proxy]):
+    """Save proxy cache to disk."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    data = {
+        "cached_at": datetime.utcnow().isoformat(),
+        "proxies": [p.to_dict() for p in proxies],
+    }
+    with open(CACHE_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+# ─── Proxy Rotation ───────────────────────────────────────────────────
+
+class ProxyRotation:
+    """Proxy rotation with per-source strategy and health tracking."""
+
+    def __init__(self):
+        # Proxy rotation: round-robin with health tracking
         self._rotation_index = 0
+        self._proxies: List[Proxy] = []
         self._source_proxy_map = {}  # source_id → preferred proxy type
+
+        # Check if Tor is available
+        self._tor_available = os.path.exists("/run/tor/tor.control") or \
+            os.path.exists("/var/run/tor/control") or \
+            subprocess.run(["pgrep", "-x", "tor"], capture_output=True).returncode == 0
 
         # Source-specific proxy strategy
         self._source_strategy = {
