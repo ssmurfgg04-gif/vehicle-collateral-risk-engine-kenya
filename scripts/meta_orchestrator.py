@@ -33,7 +33,7 @@ import sys
 import time
 import hashlib
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Any, Set
 from enum import Enum
 from dataclasses import dataclass, field
@@ -73,7 +73,7 @@ class ScrapRequest:
     max_retries: int = 3
     retry_count: int = 0
     last_error: Optional[str] = None
-    enqueued_at: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    enqueued_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     url_hash: str = field(init=False)
 
     def __post_init__(self):
@@ -626,11 +626,11 @@ class MetaOrchestrator:
         # Save results
         output_path = Path("/home/z/my-project/scripts/scrapers/data")
         output_path.mkdir(parents=True, exist_ok=True)
-        result_file = output_path / f"orchestrator_results_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+        result_file = output_path / f"orchestrator_results_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
         with open(result_file, "w") as f:
             json.dump({
                 "engine": "meta_orchestrator",
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "summary": summary,
                 "vehicles": all_vehicles,
             }, f, indent=2)

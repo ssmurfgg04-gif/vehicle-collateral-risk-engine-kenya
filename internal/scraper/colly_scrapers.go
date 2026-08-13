@@ -162,11 +162,12 @@ func (s *FamilyBankScraper) Scrape() *models.ScrapingResult {
 
 // EquityBankScraper scrapes Equity Bank Kenya vehicle listings.
 type EquityBankScraper struct {
-        c        *colly.Collector
-        queue    *queue.SQLiteQueue
-        vehicles []models.ScrapedVehicle
-        errors   []string
-        log      *zap.Logger
+        c           *colly.Collector
+        queue       *queue.SQLiteQueue
+        rateLimiter *ratelimit.DomainRateLimiter
+        vehicles    []models.ScrapedVehicle
+        errors      []string
+        log         *zap.Logger
 }
 
 var equityBankURLs = []string{
@@ -174,7 +175,7 @@ var equityBankURLs = []string{
 }
 
 // NewEquityBankScraper creates a Colly-based Equity Bank scraper.
-func NewEquityBankScraper(q *queue.SQLiteQueue) *EquityBankScraper {
+func NewEquityBankScraper(q *queue.SQLiteQueue, rl *ratelimit.DomainRateLimiter) *EquityBankScraper {
         c := colly.NewCollector(
                 colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
                 colly.Async(true),
@@ -195,9 +196,10 @@ func NewEquityBankScraper(q *queue.SQLiteQueue) *EquityBankScraper {
         })
 
         return &EquityBankScraper{
-                c:     c,
-                queue: q,
-                log:   zap.L().Named("equity_bank"),
+                c:           c,
+                queue:       q,
+                rateLimiter: rl,
+                log:         zap.L().Named("equity_bank"),
         }
 }
 
@@ -298,6 +300,15 @@ func NewKenyaGazetteScraper(q *queue.SQLiteQueue) *KenyaGazetteScraper {
                 DomainGlob:  "gazettes.africa",
                 Delay:       10 * time.Second,
                 RandomDelay: 3 * time.Second,
+        })
+
+        // Retry on rate-limit responses (government sites frequently rate-limit)
+        c.OnError(func(r *colly.Response, err error) {
+                if r.StatusCode == 429 || r.StatusCode == 503 || r.StatusCode == 502 {
+                        delay := ratelimit.FullJitterBackoff(1, 8*time.Second, 120*time.Second)
+                        time.Sleep(delay)
+                        r.Request.Retry()
+                }
         })
 
         return &KenyaGazetteScraper{

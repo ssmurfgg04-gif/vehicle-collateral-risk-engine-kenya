@@ -38,7 +38,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from typing import Dict, List, Tuple, Optional, Set
 
@@ -400,14 +400,14 @@ def generate_review_queue(df: pd.DataFrame, output_dir: str = "/home/z/my-projec
     suspected = df[df["fraud_reason"] == "SUSPECTED_FRAUD"].copy()
     suspected = suspected.sort_values("fraud_confidence", ascending=False)
 
-    review_file = Path(output_dir) / f"review_queue_{datetime.utcnow().strftime('%Y%m%d')}.csv"
+    review_file = Path(output_dir) / f"review_queue_{datetime.now(timezone.utc).strftime('%Y%m%d')}.csv"
     suspected.to_csv(review_file, index=False)
 
     # Also generate a human-readable summary
-    summary_file = Path(output_dir) / f"review_summary_{datetime.utcnow().strftime('%Y%m%d')}.txt"
+    summary_file = Path(output_dir) / f"review_summary_{datetime.now(timezone.utc).strftime('%Y%m%d')}.txt"
     with open(summary_file, "w") as f:
         f.write(f"Manual Review Queue — Kenya Vehicle Fraud Detection\n")
-        f.write(f"Generated: {datetime.utcnow().isoformat()}\n")
+        f.write(f"Generated: {datetime.now(timezone.utc).isoformat()}\n")
         f.write(f"{'='*60}\n\n")
         f.write(f"Total cases for review: {len(suspected)}\n\n")
 
@@ -607,7 +607,7 @@ def train_xgboost_organic(
         "cv_folds": [f"{a:.4f}" for a in aucs],
         "feature_count": len(X.columns),
         "top_features": top_features,
-        "trained_at": datetime.utcnow().isoformat(),
+        "trained_at": datetime.now(timezone.utc).isoformat(),
     }
 
     logger.info("organic_training_complete", **results)
@@ -688,7 +688,7 @@ def main():
     if args.export_labels:
         export_path = Path("/home/z/my-project/data/labels")
         export_path.mkdir(parents=True, exist_ok=True)
-        label_file = export_path / f"organic_labels_{datetime.utcnow().strftime('%Y%m%d')}.csv"
+        label_file = export_path / f"organic_labels_{datetime.now(timezone.utc).strftime('%Y%m%d')}.csv"
         df.to_csv(label_file, index=False)
         print(f"    Labels exported: {label_file}")
 

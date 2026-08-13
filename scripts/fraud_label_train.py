@@ -29,7 +29,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from collections import defaultdict
 from typing import List, Dict, Tuple, Optional
 
@@ -411,7 +411,7 @@ def train_xgboost_on_real_data(df: pd.DataFrame, output_dir: str = "/home/z/my-p
         "cv_folds": aucs,
         "feature_count": len(X.columns),
         "trained_on": "REAL_DATA_WITH_REAL_LABELS",
-        "trained_at": datetime.utcnow().isoformat(),
+        "trained_at": datetime.now(timezone.utc).isoformat(),
     }
 
     logger.info("training_complete", **results)

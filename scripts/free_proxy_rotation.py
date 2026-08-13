@@ -42,7 +42,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from collections import defaultdict
@@ -128,7 +128,7 @@ def save_cache(proxies: List[Proxy]):
     """Save proxy cache to disk."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     data = {
-        "cached_at": datetime.utcnow().isoformat(),
+        "cached_at": datetime.now(timezone.utc).isoformat(),
         "proxies": [p.to_dict() for p in proxies],
     }
     with open(CACHE_FILE, "w") as f:
@@ -264,7 +264,7 @@ class ProxyRotation:
         for p in self._proxies:
             if p.url == proxy_url:
                 p.success_count += 1
-                p.last_success = datetime.utcnow().isoformat()
+                p.last_success = datetime.now(timezone.utc).isoformat()
                 if latency_ms:
                     p.latency_ms = latency_ms
                 break
@@ -297,17 +297,17 @@ class ProxyRotation:
                     if resp.status == 200:
                         proxy.success_count += 1
                         proxy.latency_ms = latency
-                        proxy.last_success = datetime.utcnow().isoformat()
-                        proxy.last_checked = datetime.utcnow().isoformat()
+                        proxy.last_success = datetime.now(timezone.utc).isoformat()
+                        proxy.last_checked = datetime.now(timezone.utc).isoformat()
                         proxy.alive = True
                         return True
                     else:
                         proxy.fail_count += 1
-                        proxy.last_checked = datetime.utcnow().isoformat()
+                        proxy.last_checked = datetime.now(timezone.utc).isoformat()
                         return False
         except Exception:
             proxy.fail_count += 1
-            proxy.last_checked = datetime.utcnow().isoformat()
+            proxy.last_checked = datetime.now(timezone.utc).isoformat()
             return False
 
     async def test_all(self) -> Dict:
@@ -351,7 +351,7 @@ class ProxyRotation:
             cached_at = data.get("cached_at", "")
             if not cached_at:
                 return True
-            age = datetime.utcnow() - datetime.fromisoformat(cached_at)
+            age = datetime.now(timezone.utc) - datetime.fromisoformat(cached_at)
             return age > timedelta(hours=1)
         except Exception:
             return True

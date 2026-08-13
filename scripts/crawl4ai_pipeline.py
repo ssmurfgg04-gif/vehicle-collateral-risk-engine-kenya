@@ -31,7 +31,7 @@ import sys
 import time
 import asyncio
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 from collections import defaultdict
 
@@ -225,7 +225,7 @@ def extract_vehicles_from_text(text: str, url: str, source_id: str) -> List[Dict
 
         v = {
             "source": source_id,
-            "scraped_at": datetime.utcnow().isoformat(),
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
             "raw_plate": raw_plate,
             "normalized_plate": normalized,
             "county_code": county_code,
@@ -380,11 +380,11 @@ async def run_pipeline(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    result_file = output_path / f"crawl4ai_results_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+    result_file = output_path / f"crawl4ai_results_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
     with open(result_file, "w") as f:
         json.dump({
             "engine": "crawl4ai",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "elapsed_seconds": elapsed,
             "total_vehicles": len(all_vehicles),
             "vehicles": all_vehicles,

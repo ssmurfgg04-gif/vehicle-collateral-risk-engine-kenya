@@ -121,7 +121,7 @@ func main() {
                                 s := scraper.NewFamilyBankScraper(q, rl)
                                 result = s.Scrape()
                         case "equity_bank":
-                                s := scraper.NewEquityBankScraper(q)
+                                s := scraper.NewEquityBankScraper(q, rl)
                                 result = s.Scrape()
                         case "kenya_gazette":
                                 s := scraper.NewKenyaGazetteScraper(q)

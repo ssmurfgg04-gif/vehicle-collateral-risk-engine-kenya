@@ -33,7 +33,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 
 import numpy as np
@@ -204,7 +204,7 @@ def phase1_discovery(
         "test_auc": test_auc,
         "training_time_s": elapsed,
         "time_budget_minutes": time_budget_minutes,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
     print(f"\n  Discovery Results:")
@@ -324,7 +324,7 @@ def phase2_production(
             "mean_abs_shap": shap_results.get("mean_abs_shap_summary", {}),
         },
         "sample_explanations": explanations,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
     # Save results
@@ -484,7 +484,7 @@ def _generate_mfi_explanations(
                            ),
                 "audit_trail": {
                     "model_type": type(model).__name__,
-                    "timestamp": datetime.utcnow().isoformat(),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
                     "regulatory_basis": "CBK Prudential Guidelines + Kenya Data Protection Act",
                 },
             }
@@ -607,7 +607,7 @@ def explain_vehicle(plate: str, model_path: str = None) -> Dict:
         ],
         "audit_trail": {
             "model_path": model_path,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "regulatory_basis": "CBK Prudential Guidelines + Kenya DPA",
         },
     }
