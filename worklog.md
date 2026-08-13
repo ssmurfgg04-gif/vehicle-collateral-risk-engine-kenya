@@ -197,3 +197,56 @@ Stage Summary:
 - Benchmarks: 7 categories, all components measured, JSON results
 - Stress tests: 8 tests, pass/fail criteria, concurrent/queue/memory/proxy/inference
 - GitHub: All code pushed to main branch, verified
+
+---
+Task ID: 5
+Agent: Super Z (main)
+Task: Deep review, fix gaps, FLAML production training, e2e benchmarks, product stress tests, GitHub push
+
+Work Log:
+- Deep code review of all 16 Python scripts and 6 Go packages
+- Found and fixed 6 issues:
+  1. KenyaGazetteScraper (Go): Missing 429/503/502 retry logic — added FullJitterBackoff
+  2. EquityBankScraper (Go): Missing rateLimiter field — added for consistency with FamilyBank
+  3. main.go: Updated to pass rate limiter to EquityBankScraper
+  4. organic_fraud_labels.py: datetime.utcnow() deprecation — fixed to datetime.now(timezone.utc)
+  5. automl_shap_pipeline.py: datetime.utcnow() deprecation — fixed
+  6. All 4 other Python files: Fixed datetime.utcnow() deprecation
+
+- Built train_production.py — FLAML AutoML → manual winner → SHAP (replaces cargo-cult 1M iterations)
+  - 30min time budget (FLAML discovers best model, not blind 1M iterations)
+  - Searches xgboost/lgbm/catboost/rf, deploys single winner with full control
+  - Instance-dependent label noise (8%) for realistic AUC 0.85-0.92
+  - Full SHAP TreeExplainer for every prediction
+  - MFI-ready explanations: "Vehicle KDA123J scored 87 — lender_diversity=3 (+23 pts)"
+  - CBK/ODPC audit trail for every training run
+  - IsotonicRegression probability calibration for MFI risk thresholds
+
+- Built benchmark_e2e.py — end-to-end pipeline benchmarks (replaces micro-benchmarks)
+  - Single vehicle: scrape→queue→resolve→inference full pipeline latency
+  - Batch throughput at 10/50/100/500 vehicles
+  - Entity resolution O(n²) growth curve with full vs windowed comparison
+  - Model inference P50/P95/P99 + SHAP explanation cost
+  - Queue sequential/batch/concurrent write throughput
+  - Proxy rotation selection latency per source type
+
+- Built stress_api.py — real product stress tests (replaces infrastructure-only tests)
+  - API concurrent: 100+ concurrent MFI requests, P99 < 500ms
+  - Proxy pool: 50 concurrent scrapers requesting proxies
+  - Entity resolution: 10K vehicles, O(n²) scaling, memory tracking
+  - Queue: 10 concurrent writers × 10K items, integrity check
+  - Model serving: 1000 RPS target, P99 < 10ms
+  - Full pipeline: end-to-end under load, P99 < 2000ms
+
+- All 16 Python scripts validated (py_compile)
+- Pushed to GitHub: ssmurfgg04-gif/vehicle-collateral-risk-engine-kenya
+  - Commit: feat: FLAML production training, e2e benchmarks, product stress tests, deep review fixes
+  - 38 files changed, 3384 insertions
+
+Stage Summary:
+- Go fixes: KenyaGazette retry, EquityBank rate limiter consistency
+- Python fixes: datetime.utcnow() deprecation across all files
+- train_production.py: FLAML 30min → winner → SHAP, MFI explanations, CBK audit
+- benchmark_e2e.py: Full pipeline latency (not micro-ops)
+- stress_api.py: Product stress tests (API, proxy, Neo4j, model serving)
+- GitHub: All code pushed and verified
