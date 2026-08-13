@@ -1,0 +1,59 @@
+{
+  "mean": [
+    4.296296296296297,
+    1.0,
+    448.18518518518516,
+    0.8240740740740742,
+    2565075.3703703703
+  ],
+  "scale": [
+    1.9209337007244356,
+    1.0,
+    838.4785178916073,
+    0.09166199015381171,
+    2491672.6427577925
+  ],
+  "feature_names": [
+    "plate_source_count",
+    "chassis_plate_count",
+    "is_govt_plate",
+    "has_chassis",
+    "has_price",
+    "year",
+    "confidence",
+    "reserve_price_kes",
+    "make_",
+    "make_Isuzu",
+    "make_Mercedes",
+    "make_Mitsubishi",
+    "make_Nissan",
+    "make_Subaru",
+    "make_Toyota",
+    "county_",
+    "county_KCL",
+    "county_KCX",
+    "county_KDH",
+    "county_KDJ",
+    "county_KDN",
+    "county_KDR",
+    "county_KE",
+    "county_KF",
+    "county_KG",
+    "county_MSA",
+    "county_NA",
+    "county_SKP",
+    "source_equity_bank",
+    "source_family_bank",
+    "source_garam_auctions",
+    "source_kcb_bank",
+    "source_ncba_bank",
+    "source_unknown"
+  ],
+  "numeric_cols": [
+    "plate_source_count",
+    "chassis_plate_count",
+    "year",
+    "confidence",
+    "reserve_price_kes"
+  ]
+}

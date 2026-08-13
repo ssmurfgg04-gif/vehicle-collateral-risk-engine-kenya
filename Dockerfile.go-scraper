@@ -1,0 +1,11 @@
+FROM golang:1.23-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=1 go build -o /kenya-scraper ./cmd/kenya-scraper/
+
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates sqlite-libs
+COPY --from=builder /kenya-scraper /usr/local/bin/kenya-scraper
+ENTRYPOINT ["kenya-scraper"]
