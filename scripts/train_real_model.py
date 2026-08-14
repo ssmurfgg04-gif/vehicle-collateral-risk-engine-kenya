@@ -1,10 +1,17 @@
 """
-Real Model Training — Kenya Vehicle Collateral Risk Engine
+Auction Exposure Risk Model — Kenya Vehicle Collateral Risk Engine
 
 Trains XGBoost + SHAP on REAL scraped data only.
-- Fraud labels come from cross-lender overlap (NOT government plate detection)
-- If no overlap exists, trains a RISK model based on vehicle features
-- Full SHAP explainability for every prediction
+
+PRODUCT: Auction Exposure Detector
+  - "Has this vehicle been at auction in the last 90 days?"
+  - If yes → REJECT as loan collateral or INVESTIGATE
+  - This is NOT loan stacking detection (requires MFI loan data)
+
+Labels:
+  - HIGH risk: vehicle currently at auctioneer (for sale NOW)
+  - MEDIUM risk: vehicle at bank repossession (pipeline entry)
+  - LOW risk: vehicle was at auction 30+ days ago
 
 Usage:
     python train_real_model.py
