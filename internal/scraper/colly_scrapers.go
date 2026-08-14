@@ -175,6 +175,22 @@ var equityBankURLs = []string{
         "https://equitygroupholdings.com/ke/equity-assets/vehicles",
 }
 
+// CoopBankScraper scrapes Co-operative Bank Kenya vehicle listings.
+type CoopBankScraper struct {
+        c           *colly.Collector
+        queue       *queue.SQLiteQueue
+        rateLimiter *ratelimit.DomainRateLimiter
+        vehicles    []models.ScrapedVehicle
+        errors      []string
+        log         *zap.Logger
+}
+
+var coopBankURLs = []string{
+        "https://vehiclesales.co-opbank.co.ke",
+        "https://vehiclesales.co-opbank.co.ke/page/2",
+        "https://vehiclesales.co-opbank.co.ke/page/3",
+}
+
 // NewEquityBankScraper creates a Colly-based Equity Bank scraper.
 func NewEquityBankScraper(q *queue.SQLiteQueue, rl *ratelimit.DomainRateLimiter) *EquityBankScraper {
         c := colly.NewCollector(
@@ -554,8 +570,9 @@ type GaramAuctioneersScraper struct {
 }
 
 var garamURLs = []string{
+        "https://garam.co.ke/index.php/component/content/article/96-auction-motor-vehicle",
+        "https://garam.co.ke/index.php/auctions/motor-vehicles",
         "https://garam.co.ke",
-        "https://garam.co.ke/index.php/headers/company-profile?view=category&id=20&start=10",
 }
 
 func NewGaramAuctioneersScraper(q *queue.SQLiteQueue) *GaramAuctioneersScraper {
@@ -640,7 +657,6 @@ type KeysianAuctioneersScraper struct {
 var keysianURLs = []string{
         "https://keysianauctioneers.co.ke",
         "https://keysianauctioneers.co.ke/vehicle-auctions",
-        "https://phillipsauctioneers.co.ke",
 }
 
 func NewKeysianAuctioneersScraper(q *queue.SQLiteQueue) *KeysianAuctioneersScraper {
@@ -704,7 +720,8 @@ type GreatWarfareScraper struct {
 
 var greatwarfareURLs = []string{
         "https://www.westminster.co.ke",
-        "https://bankrepossessedcarskenya.com",
+        "https://phillipsauctioneers.co.ke/upcoming-auctions/",
+        "https://phillipsauctioneers.co.ke",
         "https://cars.mogo.co.ke/auction",
 }
 

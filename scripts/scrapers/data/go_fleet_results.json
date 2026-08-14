@@ -1,7 +1,7 @@
 {
-  "elapsed_seconds": 6.585657189,
+  "elapsed_seconds": 9.143781006,
   "fleet_engine": "go_colly",
-  "goroutines_peak": 4,
+  "goroutines_peak": 3,
   "sources_scraped": 1,
   "total_vehicles_found": 21
 }
