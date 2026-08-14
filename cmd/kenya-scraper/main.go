@@ -89,12 +89,18 @@ func main() {
         rl := ratelimit.NewDomainRateLimiter(0.33, 3, map[string]float64{
                 "familybank.co.ke":     0.33,
                 "equitybank.co.ke":     0.33,
+                "equitygroupholdings.com": 0.33,
                 "gazettes.africa":      0.1,  // Government — very polite
                 "gazettes.africa.go.ke": 0.1,
                 "kra.go.ke":             0.1,  // KRA — government, very polite
-                "garamauctioneers.co.ke": 0.33,
+                "garam.co.ke":           0.33,
                 "keysianauctioneers.co.ke": 0.33,
-                "greatwarfare.co.ke":      0.33,
+                "phillipsauctioneers.co.ke": 0.33,
+                "westminster.co.ke":      0.33,
+                "bankrepossessedcarskenya.com": 0.33,
+                "cars.mogo.co.ke":        0.33,
+                "kcbgroup.com":           0.33,
+                "co-opbank.co.ke":        0.33,
         })
 
         // ─── Benchmark Mode ────────────────────────────────────────────────────────

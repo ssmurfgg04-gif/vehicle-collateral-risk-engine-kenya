@@ -172,6 +172,7 @@ type EquityBankScraper struct {
 
 var equityBankURLs = []string{
         "https://equitybank.co.ke/vehicle-logbook-loans",
+        "https://equitygroupholdings.com/ke/equity-assets/vehicles",
 }
 
 // NewEquityBankScraper creates a Colly-based Equity Bank scraper.
@@ -553,9 +554,8 @@ type GaramAuctioneersScraper struct {
 }
 
 var garamURLs = []string{
-        "https://garamauctioneers.co.ke",
-        "https://garamauctioneers.co.ke/vehicle-auctions",
-        "https://garamauctioneers.co.ke/auctions",
+        "https://garam.co.ke",
+        "https://garam.co.ke/index.php/headers/company-profile?view=category&id=20&start=10",
 }
 
 func NewGaramAuctioneersScraper(q *queue.SQLiteQueue) *GaramAuctioneersScraper {
@@ -640,6 +640,7 @@ type KeysianAuctioneersScraper struct {
 var keysianURLs = []string{
         "https://keysianauctioneers.co.ke",
         "https://keysianauctioneers.co.ke/vehicle-auctions",
+        "https://phillipsauctioneers.co.ke",
 }
 
 func NewKeysianAuctioneersScraper(q *queue.SQLiteQueue) *KeysianAuctioneersScraper {
@@ -702,8 +703,9 @@ type GreatWarfareScraper struct {
 }
 
 var greatwarfareURLs = []string{
-        "https://greatwarfare.co.ke",
-        "https://greatwarfare.co.ke/auctions",
+        "https://www.westminster.co.ke",
+        "https://bankrepossessedcarskenya.com",
+        "https://cars.mogo.co.ke/auction",
 }
 
 func NewGreatWarfareScraper(q *queue.SQLiteQueue) *GreatWarfareScraper {
