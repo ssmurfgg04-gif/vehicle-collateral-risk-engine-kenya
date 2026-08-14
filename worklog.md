@@ -308,3 +308,30 @@ Stage Summary:
 - All stress tests passing
 - GitHub pushed with PAT
 - Cron script ready for 3x daily ingestion
+
+---
+Task ID: 1
+Agent: main
+Task: Fix scrapers, build real data pipeline, honest fraud detection
+
+Work Log:
+- Audited queue: 220 rows → only 124 unique plates (44% duplicates), ZERO cross-lender overlap
+- Cleared inflated/fake data from queue
+- Built hybrid Playwright + Crawl4AI + httpx scraper pipeline
+- Discovered correct inner page URLs: Phillips upcoming-auctions (44 vehicles!), Garam article page (5 vehicles)
+- Fixed Go scrapers with correct URLs, rebuilt binary
+- Removed dead domains (garam-auctioneers.co.ke, keysian-auctioneers.co.ke, pyramid, cascade, jomo)
+- Scraped 65 real unique vehicles from 5 sources
+- Built loan stacking fraud detector with time-series plate tracking
+- HONEST: zero cross-lender overlap found — no fake AUC claims
+- Trained risk scoring model on real data with SHAP explainability
+- Set up 6-hour scraping daemon for time-series data accumulation
+- Deleted misleading files (train_1m_iterations.py, generate_organic_dataset.py)
+- Stress tests pass
+- Pushed to GitHub
+
+Stage Summary:
+- 65 real vehicles from 5 sources (Phillips: 44, Co-op: 9, Family Bank: 6, Garam: 5, Westminster: 1)
+- Zero cross-lender overlap (no real fraud signal yet)
+- Need daily re-scraping to catch plates moving bank → auctioneer
+- Model is risk scorer, not fraud classifier (honest about this)
