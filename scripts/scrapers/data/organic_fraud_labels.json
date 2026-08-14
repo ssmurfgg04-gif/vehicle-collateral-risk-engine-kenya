@@ -1,0 +1,548 @@
+{
+  "KQ026X": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "invest_micro",
+      "sumac_micro",
+      "prime_bank",
+      "western_auction",
+      "development_bank"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GF792J": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "muungano_micro",
+      "consolidated_bank",
+      "ukweli_sacco"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "GH763R": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "kra_disposals",
+      "skyline_auction",
+      "afya_sacco",
+      "kimisitu_sacco",
+      "mhasibu_sacco"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KC115L": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "agri_micro",
+      "standard_chartered",
+      "greatwarfare",
+      "i_and_m_bank",
+      "central_auction"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SE195D": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "silver_auction",
+      "water_sacco",
+      "stima_sacco"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "GD886M": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      " Faulu_micro",
+      "ukweli_sacco",
+      "equity_bank"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "PE536K": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "credo_micro",
+      "bronze_auction",
+      "nyanza_auction",
+      "back_office_micro",
+      "agri_micro"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GK518P": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "absa_bank",
+      "sidian_bank",
+      "heritage_auction",
+      "afya_sacco",
+      "kwik_micro"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KP392B": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "sumac_micro",
+      "choice_micro",
+      "ndisposals",
+      "army_sacco",
+      "fountain_micro",
+      "echb_micro"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SD714J": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "caritas_micro",
+      "harambee_sacco",
+      "bronze_auction",
+      "ukweli_sacco"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GA736W": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "parliament_sacco",
+      "kimisitu_sacco",
+      "invest_micro",
+      "gulf_african_bank",
+      "golden_auction",
+      "highlands_auction"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KH212N": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "presidency_disposals",
+      "skyline_auction",
+      "coast_auction",
+      "kcb_bank",
+      "national_treasury",
+      "joseph_maina_auction"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KJ800U": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "kenya_gazette",
+      "cooperative_bank",
+      "invest_micro"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "GW546N": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "diamond_trust",
+      "livestock_sacco",
+      "premier_auction",
+      "uwezo_micro",
+      "family_bank"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "PD777H": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "premier_auction",
+      "nyanza_auction",
+      "judiciary_sacco",
+      "police_sacco",
+      "county_gov_disposals",
+      "kcb_bank"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GN481P": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "uwezo_micro",
+      "smep_micro",
+      "absa_bank",
+      "safaricom_savings",
+      "county_sacco",
+      "housing_finance"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GB436D": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "premier_auction",
+      "victoria_bank",
+      "branch_micro",
+      "gulf_african_bank"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GU329V": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "kwsp_micro",
+      "maisha_micro",
+      "mwalimu_sacco"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "PC015R": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "sidian_bank",
+      "sumac_micro",
+      "housing_finance",
+      "prisons_sacco",
+      "citibank_ke",
+      "premier_auction"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SA396V": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "parliament_sacco",
+      "ncba_bank",
+      "bank_of_africa",
+      "livestock_sacco"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GP368L": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "gulf_african_bank",
+      "invest_micro",
+      "forestry_sacco",
+      "mwalimu_sacco",
+      "greatwarfare",
+      "city_auction"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GN795Z": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "global_auction",
+      "parastatal_disposals",
+      "stima_sacco",
+      "sumac_micro"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SC015I": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "army_sacco",
+      "unaitas_sacco",
+      "metro_auction"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "NE631N": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "ncba_bank",
+      "highlands_auction",
+      "unaitas_sacco",
+      "remu_micro",
+      "transport_sacco"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GG603K": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "jamii_bora",
+      "tala_micro",
+      "absa_bank"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "PC730K": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "crown_auction",
+      "forestry_sacco",
+      "milele_micro",
+      "army_sacco",
+      "livestock_sacco",
+      "global_auction"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KP359R": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "housing_finance",
+      "national_treasury",
+      "kwik_micro",
+      "joseph_maina_auction",
+      "sumac_micro"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SH114J": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "forestry_sacco",
+      "bronze_auction",
+      "echb_micro",
+      "stanbic_bank",
+      "sumac_micro",
+      "benki_sacco"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GR764K": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "maisha_micro",
+      "military_disposals",
+      " Faulu_micro",
+      "guard_bank"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GN079U": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "pinnacle_auction",
+      "crown_auction",
+      "livestock_sacco"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "GN259X": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "maisha_micro",
+      "i_and_m_bank",
+      "skyline_auction",
+      "silver_auction"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KW186W": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "eastern_auction",
+      "transport_sacco",
+      "stanbic_bank",
+      "mwalimu_sacco"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SH094H": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "fountain_micro",
+      "cooperative_bank",
+      "harambee_sacco",
+      "absa_bank",
+      "benki_sacco",
+      "livestock_sacco"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GX247S": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "smep_micro",
+      "bronze_auction",
+      "i_and_m_bank",
+      "forestry_sacco",
+      "mhasibu_sacco",
+      "diamond_trust"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KG887U": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "branch_micro",
+      "citibank_ke",
+      "parastatal_disposals",
+      "unaitas_sacco",
+      "water_sacco"
+    ],
+    "n_sources": 5,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "SJ036E": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "agri_micro",
+      "military_disposals",
+      "premier_auction"
+    ],
+    "n_sources": 3,
+    "window_days": 14,
+    "confidence": 0.85
+  },
+  "SK177W": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "sidian_bank",
+      "judiciary_disposals",
+      "city_auction",
+      "back_office_micro",
+      "bronze_auction",
+      "fountain_micro"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KX166K": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "fountain_micro",
+      "mining_sacco",
+      "zenith_micro",
+      "i_and_m_bank"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "GS752L": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "bank_of_africa",
+      "national_treasury",
+      "unaitas_sacco",
+      "fisheries_sacco",
+      "keysian_auctioneers",
+      "development_bank"
+    ],
+    "n_sources": 6,
+    "window_days": 14,
+    "confidence": 0.95
+  },
+  "KG584R": {
+    "is_fraud": true,
+    "fraud_type": "MULTI_LENDER_OVERLAP",
+    "sources": [
+      "mhasibu_sacco",
+      "garam_auctioneers",
+      "zenith_micro",
+      "guard_bank"
+    ],
+    "n_sources": 4,
+    "window_days": 14,
+    "confidence": 0.95
+  }
+}

@@ -1,0 +1,527 @@
+{
+  "equity_bank": {
+    "name": "Equity Bank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "family_bank": {
+    "name": "Family Bank",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "kcb_bank": {
+    "name": "KCB Bank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "cooperative_bank": {
+    "name": "Co-operative Bank",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "ncba_bank": {
+    "name": "NCBA Bank",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "stanbic_bank": {
+    "name": "Stanbic Bank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "absa_bank": {
+    "name": "Absa Bank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "standard_chartered": {
+    "name": "Standard Chartered Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "diamond_trust": {
+    "name": "Diamond Trust Bank",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "guard_bank": {
+    "name": "Guardian Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "i_and_m_bank": {
+    "name": "I&M Bank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "sidian_bank": {
+    "name": "Sidian Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "consolidated_bank": {
+    "name": "Consolidated Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "development_bank": {
+    "name": "Development Bank of Kenya",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "housing_finance": {
+    "name": "Housing Finance Co.",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "citibank_ke": {
+    "name": "Citibank Kenya",
+    "type": "commercial_bank",
+    "tier": 1
+  },
+  "bank_of_africa": {
+    "name": "Bank of Africa Kenya",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "prime_bank": {
+    "name": "Prime Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "gulf_african_bank": {
+    "name": "Gulf African Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "victoria_bank": {
+    "name": "Victoria Commercial Bank",
+    "type": "commercial_bank",
+    "tier": 2
+  },
+  "kwsp_micro": {
+    "name": "KWSP Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  " Faulu_micro": {
+    "name": "Faulu Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "jamii_bora": {
+    "name": "Jamii Bora",
+    "type": "mfi",
+    "tier": 3
+  },
+  "smep_micro": {
+    "name": "SMEP Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "caritas_micro": {
+    "name": "Caritas Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "choice_micro": {
+    "name": "Choice Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "credo_micro": {
+    "name": "Credo Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "remu_micro": {
+    "name": "Remu Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "sumac_micro": {
+    "name": "Sumac Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "muungano_micro": {
+    "name": "Muungano Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "agri_micro": {
+    "name": "Agri Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "invest_micro": {
+    "name": "Invest Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "safaricom_savings": {
+    "name": "Safaricom Savings",
+    "type": "mfi",
+    "tier": 3
+  },
+  "tala_micro": {
+    "name": "Tala Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "branch_micro": {
+    "name": "Branch Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "kwik_micro": {
+    "name": "Kwik Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "zenith_micro": {
+    "name": "Zenith Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "milele_micro": {
+    "name": "Milele Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "dcb_micro": {
+    "name": "DCB Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "echb_micro": {
+    "name": "ECHB Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "back_office_micro": {
+    "name": "Back Office Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "pioneer_micro": {
+    "name": "Pioneer Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "maisha_micro": {
+    "name": "Maisha Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "uwezo_micro": {
+    "name": "Uwezo Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "fountain_micro": {
+    "name": "Fountain Microfinance",
+    "type": "mfi",
+    "tier": 3
+  },
+  "stima_sacco": {
+    "name": "Stima Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "mhasibu_sacco": {
+    "name": "Mhasibu Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "unaitas_sacco": {
+    "name": "Unaitas Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "ukweli_sacco": {
+    "name": "Ukweli Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "utmost_sacco": {
+    "name": "Utmost Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "benki_sacco": {
+    "name": "Benki Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "kimisitu_sacco": {
+    "name": "Kimisitu Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "mwalimu_sacco": {
+    "name": "Mwalimu Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "harambee_sacco": {
+    "name": "Harambee Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "afya_sacco": {
+    "name": "Afya Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "water_sacco": {
+    "name": "Water Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "transport_sacco": {
+    "name": "Transport Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "police_sacco": {
+    "name": "Police Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "army_sacco": {
+    "name": "Army Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "prisons_sacco": {
+    "name": "Prisons Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "teachers_sacco": {
+    "name": "Teachers Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "county_sacco": {
+    "name": "County Workers Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "judiciary_sacco": {
+    "name": "Judiciary Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "parliament_sacco": {
+    "name": "Parliament Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "livestock_sacco": {
+    "name": "Livestock Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "fisheries_sacco": {
+    "name": "Fisheries Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "mining_sacco": {
+    "name": "Mining Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "forestry_sacco": {
+    "name": "Forestry Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "energy_sacco": {
+    "name": "Energy Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "it_sacco": {
+    "name": "IT Sacco",
+    "type": "sacco",
+    "tier": 3
+  },
+  "garam_auctioneers": {
+    "name": "Garam Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "keysian_auctioneers": {
+    "name": "Keysian Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "greatwarfare": {
+    "name": "GreatWarfare Auctions",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "joseph_maina_auction": {
+    "name": "Joseph Maina Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "skyline_auction": {
+    "name": "Skyline Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "pyramid_auction": {
+    "name": "Pyramid Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "crown_auction": {
+    "name": "Crown Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "global_auction": {
+    "name": "Global Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "pinnacle_auction": {
+    "name": "Pinnacle Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "apex_auction": {
+    "name": "Apex Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "summit_auction": {
+    "name": "Summit Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "heritage_auction": {
+    "name": "Heritage Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "premier_auction": {
+    "name": "Premier Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "golden_auction": {
+    "name": "Golden Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "silver_auction": {
+    "name": "Silver Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "bronze_auction": {
+    "name": "Bronze Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "metro_auction": {
+    "name": "Metro Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "city_auction": {
+    "name": "City Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "highlands_auction": {
+    "name": "Highlands Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "coast_auction": {
+    "name": "Coast Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "rift_auction": {
+    "name": "Rift Valley Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "nyanza_auction": {
+    "name": "Nyanza Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "eastern_auction": {
+    "name": "Eastern Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "central_auction": {
+    "name": "Central Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "western_auction": {
+    "name": "Western Auctioneers",
+    "type": "auctioneer",
+    "tier": 2
+  },
+  "kra_disposals": {
+    "name": "KRA Government Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "kenya_gazette": {
+    "name": "Kenya Gazette Notices",
+    "type": "government",
+    "tier": 1
+  },
+  "national_treasury": {
+    "name": "National Treasury Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "presidency_disposals": {
+    "name": "Presidency Fleet Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "military_disposals": {
+    "name": "Military Disposals Board",
+    "type": "government",
+    "tier": 1
+  },
+  "police_disposals": {
+    "name": "Police Fleet Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "county_gov_disposals": {
+    "name": "County Government Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "parastatal_disposals": {
+    "name": "Parastatal Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "judiciary_disposals": {
+    "name": "Judiciary Fleet Disposals",
+    "type": "government",
+    "tier": 1
+  },
+  "ndisposals": {
+    "name": "Nairobi County Disposals",
+    "type": "government",
+    "tier": 1
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "model_type": "xgboost",
+  "cv_auc_mean": 1.0,
+  "cv_auc_std": 0.0,
+  "n_features": 18,
+  "n_records": 1050,
+  "fraud_rate": 0.17714285714285713,
+  "top_10_features": [
+    [
+      "fraud_confidence",
+      0.39673465490341187
+    ],
+    [
+      "n_overlap_sources",
+      0.36800262331962585
+    ],
+    [
+      "multi_source_flag",
+      0.2317756861448288
+    ],
+    [
+      "price_log",
+      0.001217633718624711
+    ],
+    [
+      "price_kes",
+      0.001199917052872479
+    ],
+    [
+      "price_per_year",
+      0.0010694252559915185
+    ],
+    [
+      "year",
+      0.0
+    ],
+    [
+      "vehicle_age",
+      0.0
+    ],
+    [
+      "confidence",
+      0.0
+    ],
+    [
+      "is_govt_plate",
+      0.0
+    ]
+  ],
+  "trained_at": "2026-08-14T04:44:43.684994+00:00"
+}

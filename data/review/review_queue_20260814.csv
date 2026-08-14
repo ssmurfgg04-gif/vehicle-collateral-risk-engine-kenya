@@ -1,0 +1,1 @@
+vehicle_id,normalized_plate,normalized_chassis,make,model,year,county_code,plate_category,source,reserve_price_kes,confidence,listing_type,extraction_method,plate_source_count,chassis_plate_count,is_govt_plate,has_chassis,has_price,fraud_label,fraud_confidence,fraud_reason,fraud_evidence,label_source

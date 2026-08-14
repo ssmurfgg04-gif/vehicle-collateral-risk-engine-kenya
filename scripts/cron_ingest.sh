@@ -7,7 +7,7 @@ set -e
 
 PROJECT_DIR="/home/z/my-project"
 PYTHON="$PROJECT_DIR/.venv/bin/python3"
-GO_BIN="$PROJECT_DIR/bin/kenya-scraper"
+GO_BIN="$PROJECT_DIR/scripts/kenya-scraper"
 LOG_DIR="$PROJECT_DIR/data/cron_logs"
 QUEUE_DB="$PROJECT_DIR/data/ingestion_queue.db"
 
