@@ -1,0 +1,50 @@
+{
+  "training_date": "2026-08-14T05:31:41.906814+00:00",
+  "n_vehicles": 65,
+  "n_features": 20,
+  "feature_names": [
+    "log_price",
+    "has_price",
+    "price_bucket",
+    "plate_length",
+    "county_prefix_is_K",
+    "county_prefix_is_N",
+    "is_government_plate",
+    "county_risk",
+    "has_make",
+    "has_model",
+    "has_year",
+    "vehicle_age",
+    "make_risk",
+    "source_type_risk",
+    "is_bank_source",
+    "is_auctioneer_source",
+    "is_govt_source",
+    "is_mfi_source",
+    "confidence",
+    "data_completeness"
+  ],
+  "has_cross_lender_overlap": false,
+  "model_type": "risk_scorer",
+  "n_positive": 29,
+  "n_negative": 36,
+  "warning": "NO_REAL_FRAUD_LABELS",
+  "per_source": {
+    "family_bank": 6,
+    "coop_bank": 9,
+    "garam": 5,
+    "phillips": 44,
+    "westminster": 1
+  },
+  "params": {
+    "objective": "binary:logistic",
+    "eval_metric": "auc",
+    "max_depth": 4,
+    "learning_rate": 0.1,
+    "n_estimators": 100,
+    "min_child_weight": 3,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "random_state": 42
+  }
+}

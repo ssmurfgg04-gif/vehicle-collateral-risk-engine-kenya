@@ -1,0 +1,29 @@
+{
+  "feature_importance": {
+    "county_risk": 1.666721224784851,
+    "is_bank_source": 0.06382058560848236,
+    "log_price": 0.0,
+    "has_price": 0.0,
+    "price_bucket": 0.0,
+    "plate_length": 0.0,
+    "county_prefix_is_K": 0.0,
+    "county_prefix_is_N": 0.0,
+    "is_government_plate": 0.0,
+    "has_make": 0.0,
+    "has_model": 0.0,
+    "has_year": 0.0,
+    "vehicle_age": 0.0,
+    "make_risk": 0.0,
+    "source_type_risk": 0.0,
+    "is_auctioneer_source": 0.0,
+    "is_govt_source": 0.0,
+    "is_mfi_source": 0.0,
+    "confidence": 0.0,
+    "data_completeness": 0.0
+  },
+  "model_type": "risk_scorer",
+  "training_date": "2026-08-14T05:31:41.904996+00:00",
+  "n_vehicles": 65,
+  "n_features": 20,
+  "has_cross_lender_overlap": false
+}

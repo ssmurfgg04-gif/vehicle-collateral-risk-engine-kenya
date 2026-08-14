@@ -1,0 +1,19 @@
+{
+  "scraped_at": "2026-08-14T05:22:55.328909+00:00",
+  "total_vehicles": 2,
+  "total_queued": 2,
+  "unique_plates": 69,
+  "cross_lender_overlaps": 0,
+  "per_source": {
+    "equity_bank": 0,
+    "kcb_bank": 0,
+    "bank_repossessed": 0,
+    "ncba_bank": 2,
+    "stanbic_bank": 0,
+    "dtb_bank": 0,
+    "pyramid_auctioneers": 0,
+    "leakey_auctioneers": 0,
+    "cascade_auctioneers": 0,
+    "jomo_auctioneers": 0
+  }
+}

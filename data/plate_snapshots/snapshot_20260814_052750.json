@@ -1,0 +1,97 @@
+{
+  "timestamp": "20260814_052750",
+  "total_vehicles": 65,
+  "total_unique_plates": 65,
+  "sources": {
+    "family_bank": {
+      "vehicle_count": 6,
+      "plates": [
+        "KDH359R",
+        "KCX387A",
+        "KDR359T",
+        "KDJ158V",
+        "KDN269V",
+        "KCL312N"
+      ]
+    },
+    "coop_bank": {
+      "vehicle_count": 9,
+      "plates": [
+        "KCZ584A",
+        "KCU346A",
+        "KCZ588A",
+        "KCU348A",
+        "KCZ595A",
+        "KCZ587A",
+        "KCZ572A",
+        "KCU301A",
+        "KCZ590A"
+      ]
+    },
+    "garam": {
+      "vehicle_count": 5,
+      "plates": [
+        "KDR717D",
+        "KCQ343C",
+        "KDM811A",
+        "KCM012Q",
+        "KCZ704D"
+      ]
+    },
+    "phillips": {
+      "vehicle_count": 44,
+      "plates": [
+        "KCM323P",
+        "KDL388J",
+        "KDB276J",
+        "KDN346D",
+        "KCL227K",
+        "WU720R",
+        "KBZ259J",
+        "KDG812T",
+        "KCA460C",
+        "KCP065Y",
+        "KAQ020Z",
+        "KDS332M",
+        "KCT358S",
+        "KBE637U",
+        "KAC778W",
+        "KDQ195P",
+        "KDT723E",
+        "KDP505W",
+        "KDT843T",
+        "KDX847E",
+        "KDR514W",
+        "KDG039L",
+        "KDP351J",
+        "KCP299D",
+        "KDM543A",
+        "KDQ939K",
+        "KBQ852R",
+        "KDG489S",
+        "KCL512M",
+        "KCY535J",
+        "KDH018G",
+        "KBU976H",
+        "RX350SE",
+        "KDA999Y",
+        "KDB942T",
+        "KDE257U",
+        "KDG687P",
+        "KDJ441C",
+        "KDS034L",
+        "NSP160V",
+        "KDT727F",
+        "KDQ599S",
+        "KDQ899F",
+        "KDV708F"
+      ]
+    },
+    "westminster": {
+      "vehicle_count": 1,
+      "plates": [
+        "KGC10S"
+      ]
+    }
+  }
+}
